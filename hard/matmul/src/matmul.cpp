@@ -34,6 +34,10 @@ int32_t g_c[16 * 16];
 #define TT_CPU_HZ 1000000000ULL
 #endif
 
+#ifndef TT_USE_RDCYCLE
+#define TT_USE_RDCYCLE 0
+#endif
+
 static inline uint64_t rdcycle() {
 #if defined(__riscv) && __riscv_xlen == 32
     uint32_t hi1, lo, hi2;
@@ -109,7 +113,10 @@ int run_baremetal(int argc, char **argv) {
     const uint8_t *a = g_ab;
     const int8_t *b = reinterpret_cast<const int8_t *>(g_ab + kABytes);
 
-    uint64_t start_cycles = rdcycle();
+    uint64_t start_cycles = 0;
+#if TT_USE_RDCYCLE
+    start_cycles = rdcycle();
+#endif
     for (int r = 0; r < 16; ++r) {
         for (int c = 0; c < 16; ++c) {
             int32_t sum = 0;
@@ -121,7 +128,10 @@ int run_baremetal(int argc, char **argv) {
             g_c[r * 16 + c] = sum;
         }
     }
-    uint64_t end_cycles = rdcycle();
+    uint64_t end_cycles = 0;
+#if TT_USE_RDCYCLE
+    end_cycles = rdcycle();
+#endif
 
     (void)no_output;
     uint64_t elapsed_cycles = end_cycles - start_cycles;

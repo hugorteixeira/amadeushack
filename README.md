@@ -74,6 +74,15 @@ To set the CPU frequency for cycle-based timing (default 1 GHz):
 TT_CPU_HZ=1500000000 ./benchmark_riscv.sh --runs 1
 ```
 
+If the simulator supports `rdcycle`, enable it explicitly:
+
+```bash
+TT_USE_RDCYCLE=1 ./benchmark_riscv.sh --runs 1
+```
+
+If you see `Illegal instruction`, keep `TT_USE_RDCYCLE=0` and the script will
+report `elapsed_ms=0` for bare-metal.
+
 ## Useful options (all scripts)
 
 - Use a different RPC:

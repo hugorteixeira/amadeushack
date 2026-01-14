@@ -17,6 +17,7 @@ RISCV_CC=${RISCV_CC:-}
 RISCV_CXX=${RISCV_CXX:-}
 RISCV_RUNNER=${RISCV_RUNNER:-}
 RISCV_RUNNER_ARGS=${RISCV_RUNNER_ARGS:-}
+NO_OUTPUT=${NO_OUTPUT:-1}
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 MATMUL_DIR="${ROOT_DIR}/hard/matmul"
@@ -51,6 +52,10 @@ while [[ $# -gt 0 ]]; do
       NO_BUILD=1
       shift
       ;;
+    --write-output)
+      NO_OUTPUT=0
+      shift
+      ;;
     --runner)
       RISCV_RUNNER="$2"
       shift 2
@@ -69,6 +74,15 @@ done
 if [[ -z "${SEED_HEX}" ]]; then
   if [[ -f "${SEED_BIN}" ]]; then
     echo "Using seed file: ${SEED_BIN}"
+    if command -v python3 >/dev/null 2>&1; then
+      SEED_HEX=$(python3 - <<'PY'
+from pathlib import Path
+print(Path("'"${SEED_BIN}"'").read_bytes().hex())
+PY
+)
+    elif command -v xxd >/dev/null 2>&1; then
+      SEED_HEX=$(xxd -p -c 100000 "${SEED_BIN}" | tr -d '\n')
+    fi
   else
     if ! command -v node >/dev/null 2>&1; then
       echo "Node.js not found. Provide SEED_HEX or SEED_BIN." >&2
@@ -143,9 +157,17 @@ trap 'rm -f "${ELAPSED_FILE}" "${GFLOPS_FILE}"' EXIT
 
 for i in $(seq 1 "${RUNS}"); do
   if [[ -n "${SEED_HEX}" ]]; then
-    output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-hex "${SEED_HEX}" --output "${SOLUTION_OUT}")
+    if [[ "${NO_OUTPUT}" == "1" ]]; then
+      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-hex "${SEED_HEX}" --no-output)
+    else
+      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-hex "${SEED_HEX}" --output "${SOLUTION_OUT}")
+    fi
   else
-    output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-path "${SEED_BIN}" --output "${SOLUTION_OUT}")
+    if [[ "${NO_OUTPUT}" == "1" ]]; then
+      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-path "${SEED_BIN}" --no-output)
+    else
+      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-path "${SEED_BIN}" --output "${SOLUTION_OUT}")
+    fi
   fi
   echo "${output}"
   elapsed=$(echo "${output}" | sed -n 's/.*"elapsed_ms":\([0-9.]*\).*/\1/p')

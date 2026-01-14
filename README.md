@@ -50,6 +50,13 @@ Use a custom runner:
 RISCV_RUNNER=/path/to/runner RISCV_RUNNER_ARGS="--flag value" ./benchmark_riscv.sh --runs 5
 ```
 
+By default, the RISC-V script runs with `--no-output` to avoid filesystem calls in bare-metal
+environments. To write `solution.bin`, pass:
+
+```bash
+./benchmark_riscv.sh --runs 5 --write-output
+```
+
 ## Useful options (all scripts)
 
 - Use a different RPC:

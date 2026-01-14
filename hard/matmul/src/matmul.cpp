@@ -28,12 +28,13 @@ struct Options {
     bool upow = false;
     std::string seed_path;
     std::string seed_hex;
+    bool no_output = false;
 };
 
 static void usage(const char *argv0) {
     std::fprintf(
         stderr,
-        "Usage: %s [--m M] [--n N] [--k K] [--algo naive|blocked] [--block B] [--seed S] [--input PATH] [--output PATH] [--upow --seed-path PATH|--seed-hex HEX]\n",
+        "Usage: %s [--m M] [--n N] [--k K] [--algo naive|blocked] [--block B] [--seed S] [--input PATH] [--output PATH] [--no-output] [--upow --seed-path PATH|--seed-hex HEX]\n",
         argv0);
 }
 
@@ -63,6 +64,8 @@ static bool parse_arg(int argc, char **argv, int &i, Options &opt) {
         opt.input_path = require_value("--input");
     } else if (arg == "--output") {
         opt.output_path = require_value("--output");
+    } else if (arg == "--no-output") {
+        opt.no_output = true;
     } else if (arg == "--upow") {
         opt.upow = true;
     } else if (arg == "--seed-path") {
@@ -337,7 +340,9 @@ int main(int argc, char **argv) {
         matmul_upow(a_bytes, b_bytes, c_int);
         auto matmul_end = std::chrono::steady_clock::now();
 
-        write_solution(opt, seed, c_int);
+        if (!opt.no_output) {
+            write_solution(opt, seed, c_int);
+        }
 
         std::chrono::duration<double, std::milli> gen_ms = gen_end - gen_start;
         std::chrono::duration<double, std::milli> matmul_ms = matmul_end - matmul_start;

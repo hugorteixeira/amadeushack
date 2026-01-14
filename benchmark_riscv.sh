@@ -13,8 +13,8 @@ RPC_URL=${RPC_URL:-https://nodes.amadeus.bot}
 SEED_HEX=${SEED_HEX:-}
 SEED_BIN=${SEED_BIN:-}
 NO_BUILD=${NO_BUILD:-0}
-RISCV_CC=${RISCV_CC:-riscv64-unknown-linux-gnu-gcc}
-RISCV_CXX=${RISCV_CXX:-riscv64-unknown-linux-gnu-g++}
+RISCV_CC=${RISCV_CC:-}
+RISCV_CXX=${RISCV_CXX:-}
 RISCV_RUNNER=${RISCV_RUNNER:-}
 RISCV_RUNNER_ARGS=${RISCV_RUNNER_ARGS:-}
 
@@ -95,6 +95,19 @@ if [[ -z "${SEED_HEX}" ]]; then
 fi
 
 if [[ "${NO_BUILD}" != "1" ]]; then
+  if [[ -z "${RISCV_CC}" && -x /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-gcc ]]; then
+    RISCV_CC=/opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-gcc
+  fi
+  if [[ -z "${RISCV_CXX}" && -x /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-g++ ]]; then
+    RISCV_CXX=/opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-g++
+  fi
+  if [[ -z "${RISCV_CC}" ]]; then
+    RISCV_CC=riscv64-unknown-linux-gnu-gcc
+  fi
+  if [[ -z "${RISCV_CXX}" ]]; then
+    RISCV_CXX=riscv64-unknown-linux-gnu-g++
+  fi
+
   mkdir -p "${BUILD_DIR}/third_party/blake3" "${BUILD_DIR}/src"
   COMMON_DEFS="-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 -DBLAKE3_NO_AVX2 -DBLAKE3_NO_AVX512"
   RISCV_CFLAGS="${RISCV_CFLAGS:--O3 -std=c11 ${COMMON_DEFS} -I${MATMUL_DIR}/third_party/blake3}"
@@ -112,10 +125,12 @@ if [[ "${NO_BUILD}" != "1" ]]; then
 fi
 
 if [[ -z "${RISCV_RUNNER}" ]]; then
-  if command -v qemu-riscv64 >/dev/null 2>&1; then
+  if [[ -x /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-run ]]; then
+    RISCV_RUNNER="/opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-run"
+  elif command -v qemu-riscv64 >/dev/null 2>&1; then
     RISCV_RUNNER="qemu-riscv64"
   else
-    echo "RISCV_RUNNER not set and qemu-riscv64 not found." >&2
+    echo "RISCV_RUNNER not set and no runner found." >&2
     exit 1
   fi
 fi

@@ -50,14 +50,6 @@ Use a custom runner:
 RISCV_RUNNER=/path/to/runner RISCV_RUNNER_ARGS="--flag value" ./benchmark_riscv.sh --runs 5
 ```
 
-## NVIDIA GPU version
-
-Requires CUDA Toolkit (`nvcc`) and an NVIDIA GPU.
-
-```bash
-./benchmark_cuda.sh --runs 5
-```
-
 ## Useful options (all scripts)
 
 - Use a different RPC:

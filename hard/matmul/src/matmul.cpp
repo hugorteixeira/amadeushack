@@ -30,6 +30,28 @@ constexpr size_t kABBytes = kABytes + kBBytes;
 uint8_t g_ab[kABBytes];
 int32_t g_c[16 * 16];
 
+#ifndef TT_CPU_HZ
+#define TT_CPU_HZ 1000000000ULL
+#endif
+
+static inline uint64_t rdcycle() {
+#if defined(__riscv) && __riscv_xlen == 32
+    uint32_t hi1, lo, hi2;
+    do {
+        asm volatile("rdcycleh %0" : "=r"(hi1));
+        asm volatile("rdcycle %0" : "=r"(lo));
+        asm volatile("rdcycleh %0" : "=r"(hi2));
+    } while (hi1 != hi2);
+    return (static_cast<uint64_t>(hi2) << 32) | lo;
+#elif defined(__riscv)
+    uint64_t cycles;
+    asm volatile("rdcycle %0" : "=r"(cycles));
+    return cycles;
+#else
+    return 0;
+#endif
+}
+
 int hex_val(char c) {
     if (c >= '0' && c <= '9') return c - '0';
     if (c >= 'a' && c <= 'f') return 10 + (c - 'a');
@@ -87,6 +109,7 @@ int run_baremetal(int argc, char **argv) {
     const uint8_t *a = g_ab;
     const int8_t *b = reinterpret_cast<const int8_t *>(g_ab + kABytes);
 
+    uint64_t start_cycles = rdcycle();
     for (int r = 0; r < 16; ++r) {
         for (int c = 0; c < 16; ++c) {
             int32_t sum = 0;
@@ -98,10 +121,24 @@ int run_baremetal(int argc, char **argv) {
             g_c[r * 16 + c] = sum;
         }
     }
+    uint64_t end_cycles = rdcycle();
 
     (void)no_output;
-    const char msg[] = "{\"mode\":\"upow_baremetal\",\"elapsed_ms\":0,\"gflops\":0}\n";
-    (void)write(1, msg, sizeof(msg) - 1);
+    uint64_t elapsed_cycles = end_cycles - start_cycles;
+    double elapsed_ms = (elapsed_cycles == 0)
+        ? 0.0
+        : (static_cast<double>(elapsed_cycles) * 1000.0) / static_cast<double>(TT_CPU_HZ);
+    double ops = 2.0 * 16.0 * 16.0 * 50240.0;
+    double gflops = (elapsed_cycles == 0)
+        ? 0.0
+        : (ops * static_cast<double>(TT_CPU_HZ)) / (static_cast<double>(elapsed_cycles) * 1e9);
+    char buf[160];
+    int n = std::snprintf(buf, sizeof(buf),
+                          "{\"mode\":\"upow_baremetal\",\"elapsed_ms\":%.6f,\"gflops\":%.6f}\n",
+                          elapsed_ms, gflops);
+    if (n > 0) {
+        (void)write(1, buf, static_cast<size_t>(n));
+    }
     return 0;
 }
 } // namespace

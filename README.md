@@ -68,6 +68,12 @@ Note: the bare-metal build embeds the seed at compile time (via `TT_SEED_HEX`)
 and can also read `SEED_HEX` from the environment if program arguments are not
 forwarded by the simulator.
 
+To set the CPU frequency for cycle-based timing (default 1 GHz):
+
+```bash
+TT_CPU_HZ=1500000000 ./benchmark_riscv.sh --runs 1
+```
+
 ## Useful options (all scripts)
 
 - Use a different RPC:

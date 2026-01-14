@@ -19,6 +19,7 @@ RISCV_RUNNER=${RISCV_RUNNER:-}
 RISCV_RUNNER_ARGS=${RISCV_RUNNER_ARGS:-}
 NO_OUTPUT=${NO_OUTPUT:-1}
 TT_BAREMETAL=${TT_BAREMETAL:-1}
+TT_CPU_HZ=${TT_CPU_HZ:-1000000000}
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 MATMUL_DIR="${ROOT_DIR}/hard/matmul"
@@ -142,7 +143,7 @@ if [[ "${NO_BUILD}" != "1" ]]; then
   RISCV_CXXFLAGS="${RISCV_CXXFLAGS:--O3 -std=c++17 ${COMMON_DEFS} -I${MATMUL_DIR}/third_party/blake3}"
   if [[ "${TT_BAREMETAL}" == "1" ]]; then
     SEED_HEADER="${BUILD_DIR}/seed_hex.h"
-    printf '#define TT_SEED_HEX "%s"\n' "${SEED_HEX}" > "${SEED_HEADER}"
+    printf '#define TT_SEED_HEX "%s"\n#define TT_CPU_HZ %s\n' "${SEED_HEX}" "${TT_CPU_HZ}" > "${SEED_HEADER}"
     RISCV_CXXFLAGS="${RISCV_CXXFLAGS} -include ${SEED_HEADER}"
   fi
 

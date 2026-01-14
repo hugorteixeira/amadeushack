@@ -204,10 +204,47 @@ for i in $(seq 1 "${RUNS}"); do
     fi
   fi
 
+  start_ns=""
+  if command -v python3 >/dev/null 2>&1; then
+    start_ns=$(python3 - <<'PY'
+import time
+print(time.time_ns())
+PY
+)
+  else
+    start_ns=$(date +%s%N 2>/dev/null || echo 0)
+  fi
+
   if ! output=$(SEED_HEX="${SEED_HEX}" "${cmd[@]}" 2>&1); then
     echo "${output}" >&2
     echo "Runner failed." >&2
     exit 1
+  fi
+
+  end_ns=""
+  if command -v python3 >/dev/null 2>&1; then
+    end_ns=$(python3 - <<'PY'
+import time
+print(time.time_ns())
+PY
+)
+  else
+    end_ns=$(date +%s%N 2>/dev/null || echo 0)
+  fi
+  host_elapsed_ms=0
+  if [[ -n "${start_ns}" && -n "${end_ns}" && "${start_ns}" != "0" && "${end_ns}" != "0" ]]; then
+    if command -v python3 >/dev/null 2>&1; then
+      host_elapsed_ms=$(python3 - <<'PY'
+import os
+start_ns = int(os.environ.get("START_NS", "0"))
+end_ns = int(os.environ.get("END_NS", "0"))
+ms = (end_ns - start_ns) / 1_000_000.0
+print(f"{ms:.6f}")
+PY
+START_NS="${start_ns}" END_NS="${end_ns}")
+    else
+      host_elapsed_ms=$(awk -v s="${start_ns}" -v e="${end_ns}" 'BEGIN{printf "%.6f", (e-s)/1000000.0}')
+    fi
   fi
   echo "${output}"
   elapsed=$(echo "${output}" | sed -n 's/.*"elapsed_ms":\([0-9.]*\).*/\1/p')
@@ -242,6 +279,24 @@ ELAPSED_CYCLES="${elapsed_cycles}" TT_CPU_HZ="${TT_CPU_HZ}" ) || true
       fi
     fi
   fi
+  if [[ "${TT_BAREMETAL}" == "1" && ( -z "${elapsed}" || -z "${gflops}" || "${elapsed}" == "0" ) && "${host_elapsed_ms}" != "0" ]]; then
+    elapsed="${host_elapsed_ms}"
+    if command -v python3 >/dev/null 2>&1; then
+      gflops=$(python3 - <<'PY'
+import os
+ms = float(os.environ.get("ELAPSED_MS", "0"))
+if ms == 0.0:
+    print("0.000000")
+else:
+    ops = 2.0 * 16.0 * 16.0 * 50240.0
+    g = ops / (ms * 1e6)
+    print(f"{g:.6f}")
+PY
+ELAPSED_MS="${elapsed}") || gflops=0
+    else
+      gflops=$(awk -v ms="${elapsed}" 'BEGIN{if(ms==0){printf "0.000000"} else {ops=2.0*16.0*16.0*50240.0; printf "%.6f", ops/(ms*1e6)}}')
+    fi
+  fi
   if [[ -z "${elapsed}" || -z "${gflops}" ]]; then
     if [[ "${TT_BAREMETAL}" == "1" ]]; then
       echo "Warning: failed to parse benchmark output, assuming 0 for bare-metal." >&2
@@ -254,7 +309,11 @@ ELAPSED_CYCLES="${elapsed_cycles}" TT_CPU_HZ="${TT_CPU_HZ}" ) || true
   fi
   echo "${elapsed}" >> "${ELAPSED_FILE}"
   echo "${gflops}" >> "${GFLOPS_FILE}"
-  echo "run=${i} elapsed_ms=${elapsed} gflops=${gflops}"
+  if [[ "${host_elapsed_ms}" != "0" ]]; then
+    echo "run=${i} elapsed_ms=${elapsed} gflops=${gflops} host_elapsed_ms=${host_elapsed_ms}"
+  else
+    echo "run=${i} elapsed_ms=${elapsed} gflops=${gflops}"
+  fi
 done
 
 stats() {

@@ -1,0 +1,104 @@
+Amadeus Genesis Hack
+
+Join the very first Amadeus Genesis Hack — build autonomous agents. benchmark AI hardware. win big. open to both technical and non-technical builders.
+Preferences
+Join DISCORD
+Organization
+Amadeus
+Co-Hosts
+
+Build the Future of Autonomous Agents.
+
+Amadeus Genesis Hack ·  6 weeks · $100K in prizes
+
+Join the global Amadeus community for a hybrid soft + hard hackathon designed to shape the foundations of the world’s first thinking blockchain.
+
+This is a no-code ideathon + compute challenge for creative minds ready to define the next era of onchain AI.
+
+
+Why build on Amadeus?
+
+🔮 AI-native infrastructure to power the autonomous economy, a blockchain that thinks, learns, and evolves.
+
+🧠 Product Stack: NovaAI (agent training), Agent Studio (no-code UI and marketplace).
+
+🤑 Tech Stack: x402, privacy layer, sub-second finality and massive TPS, settlement and coordination for agents.
+
+📍Shape the Future of Decentralized AI - Your feedback and ideas directly influence the Amadeus roadmap. We're building the strongest AI builder community onchain and we're excited to build it with you.
+
+
+Who should join:
+
+For Entrepreneurs & Founders
+
+The Soft Hack (Ideathon) is designed for you if you want to:
+
+    Design an agent-driven application
+
+    Explore tokenized agent economies
+
+    Position yourself for funding + launchpad support in Q1
+
+No code required.
+
+For AI, ML & Hardware Engineers
+
+The Hard Hack challenges you to:
+
+    Build a high-performance MatMul solver
+
+    Benchmark AI workloads
+
+    Experiment with real hardware using Tenstorrent’s Blackhole™ p150a Tensix Processor
+
+
+Tracks
+
+Take your pick or participate in both. Learn more about each track requirement and deliverables in the categories tab.
+
+1. Soft Hack — Ideation Track
+
+Conceptualize and prototype AI agents or decentralized apps that could run on Amadeus — informed by upcoming roadmap primitives like:
+
+    Onchain agent execution
+
+    Verified compute
+
+    AI training
+
+    GPU marketplace
+
+This track feeds directly into the Amadeus Launchpad pipeline.
+
+2. Hard Hack — RISC-V Compute Track
+
+Build a MatMul solver capable of running AMA-style compute workloads on Tenstorrent hardware. Cloud hardware instances are provided for all participants.
+
+
+Prizes & Perks
+
+    $100,000 prize pool, paid out in $AMA
+
+    Mentorship & Community Access - work alongside your peers and the Amadeus engineers. We’re here to level you up and help you ship.
+
+    AI Hardware Access - complimentary 6-week access to the Blackhole™ p150a Tensix Processor (hard hack track only).
+
+    Accelerated Funding - winners and top-performing teams will be eligible for grants from Amadeus and select partners.
+
+    Genesis Builder Status - early positioning for future launchpad listings
+
+Key Dates (Save it!)
+
+    4th December - Registration Opens
+    19th December - Opening Ceremony
+    23rd December - Workshop
+    30th December - Workshop
+    31st December - Registration Closes (11pm UTC) - **NEW Extended Date**
+    6th-14th January - Tech Support
+    15th January - Submission Deadline (11pm UTC)
+    23rd January - Winners Announced
+
+
+🤖 Let’s build the agentic economy future together.
+
+Apply now and be part of the Amadeus Genesis Hack!

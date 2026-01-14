@@ -1,0 +1,27 @@
+Hard Hack: RISC-V Edition
+
+TensTorrent Blackhole™ p150a cloud access will be provided to all participants, free of charge.
+
+Your goal is to demonstrate Tenstorrent hardware running decentralized AI workloads with verifiable performance.  Choose from the either challenge below:
+
+Challenge A — Miner RISC-V Computer Prototype
+
+Build a prototype MatMul solver capable of executing amadeus computer workloads (e.g., matrix multiplications).
+
+Highest score wins, source code can be kept confidential to the team, you will be given an API to submit solutions to, quicker implementations wins. Build a prototype miner client capable of executing AMA compute workloads  inside a RISC-V environment.
+
+Deliverable:
+
+    Score Challenge: Submit benchmark results demonstrating performance on CPU/GPU-based RISC-V simulation.
+
+
+Challenge B — Succinct Proof on RISC-V
+
+Implement SPI proof computation that runs efficiently on RISC-V.
+
+Deliverable:
+
+    Fastest Merkle Proofs: Provide the fastest verifiable Merkle proof generation and verification running on RISC-V.
+
+
+Check out the onboarding pdf for a detailed onboarding for devs.

@@ -1,0 +1,8 @@
+ /node/
+  hard/matmul/seed.bin
+  hard/matmul/solution.bin
+  hard/matmul/*.bin
+  hard/matmul/matmul
+  hard/matmul/*.o
+  hard/matmul/scripts/node_modules/
+  *.log

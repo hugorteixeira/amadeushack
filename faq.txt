@@ -1,0 +1,79 @@
+What is the Amadeus Genesis Hack?
+
+The Amadeus Genesis Hack is an online global hackathon focused on agentic AI, commercial and privacy rails, and RISC-V compute prototyping.
+
+The event includes:
+
+    A design-driven ideathon track
+    A deep-tech AI hardware track
+    Live virtual workshops & technical deep dives
+    Sponsor challenges
+    6 weeks of hacking, architecture design, and prototyping
+
+
+Who can participate?
+
+Anyone with a creative or technical mindset:
+
+    AI & ML researchers
+    Blockchain engineers
+    Systems and cryptography developers
+    Hardware / RISC-V / FPGA engineers
+    ZK & TEE practitioners
+    Product designers
+    Students & newcomer
+
+
+How much does it cost?
+
+Participation is free. For the hard hack track only, participants will be provided cloud access to Blackhole™ p150a Tensix Processor, free of charge, for AI workload benchmarking challenges.
+
+How are participants selected?
+
+The ideathon is open to everyone, no hard cap on total participants.
+
+Due to limited access to cloud instances, space for the hard hack is limited. We will do our best to accommodate participants in teams if necessary. More info to be shared via Discord and announcements on TAIKAI platform.
+
+Can I participate solo or in a team?
+
+You can participate solo or in teams of up to 4 for both tracks.
+
+How will projects be evaluated?
+
+All submissions are evaluated by Amadeus core contributors, ecosystem partners, and technical partners.
+
+Hardhack submissions are scored on speed and performance benchmarks (see category section for specifics).
+
+Ideathon submissions are scored on the following criteria:
+
+🔹 1. Conceptual & System Architecture Depth
+
+🔹 2. Problem Framing & Insight
+
+🔹 3. Trust & Verification Model
+
+🔹 4. Clarity & Documentation
+
+🔹 5. Creativity & Originality
+
+Can a project win multiple prizes?
+
+Yes — for example a project can win a main prize (1st–6th) AND one or both bonus awards.
+
+Where can I buy and trade $AMA?
+
+Right now, you can’t.
+
+$AMA is not listed on any DEX or CEX yet—and that’s exactly the opportunity.
+
+By participating, you earn $AMA at the pre-listing price of $0.10, with:
+
+    No VCs taking allocation
+
+    No premine
+
+    No centralized insiders dumping on you
+
+You’re not just earning a payout. You’re earning early equity-like upside in an ecosystem that you’re helping create.
+
+

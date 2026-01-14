@@ -1,0 +1,255 @@
+1. ORGANIZATION OF THE CHALLENGE
+
+Open Matrix Software LTD (“Organizer”), operating under the Amadeus brand (“Amadeus”), is organizing the challenge described below (“Challenge”).The Challenge is hosted exclusively on the TAIKAI platform and will take place:
+
+    Announcement Date: 4 December 2024
+
+    Registration Deadline: 25 December 2024
+
+    Submission Deadline: 15 January 2025
+
+    Judging Period: 16–22 January 2025
+
+    Winner Announcement: 23 January 2025
+
+The Organizer is responsible for defining the Challenge scope, rules, selection criteria, and prize distribution.
+
+2. DEFINITIONS
+
+“Challenge” – The competition organized by Amadeus via TAIKAI.
+“Organizer” – Open Matrix Software LTD (Amadeus).
+“Innovator” – Any natural person registered on TAIKAI who participates in the Challenge.
+“Team” – A group of 2–4 Innovators.
+“Project” – All submissions, documentation, assets, and materials uploaded by a Team.
+“Judges” – The panel selected by the Organizer to evaluate Projects.
+“Prizes” – The rewards awarded to winning Teams, totaling 1,000,000 $AMA.
+“Rules” – These Terms & Conditions governing participation.
+“Intellectual Property Rights” – All rights associated with creative or technical works.
+“General User Terms & Conditions and Privacy Policy” – TAIKAI’s platform-wide rules.
+
+3. PURPOSE OF THE RULES
+
+These Rules govern participation in the Challenge and supplement TAIKAI’s Terms & Conditions. In case of conflict, these Rules prevail for all matters relating to the Challenge.
+
+The Challenge tests skill, creativity, technical ability, and problem-solving. It does not involve any element of chance and therefore is not a lottery.
+
+4. CONDITIONS FOR ENTERING THE CHALLENGE
+
+4.1 Participation is free.
+4.2 Innovators must fully accept these Rules prior to registration.
+4.3 Participants must be of legal age in their jurisdiction.
+4.4 The Prize may only be awarded to eligible Innovators.
+4.5 One entry per person.
+4.6 Teams must consist of 1 to 4 members.
+4.7 Any violation of these Rules may result in immediate disqualification without prior notice.
+
+5. REGISTRATION & ACCESS
+
+5.1 Innovators must create an account on taikai.network with:
+
+    Valid username
+
+    Valid email
+
+    Password
+
+    Acceptance of TAIKAI ToS + these Challenge Rules
+
+5.2 Incomplete or incorrect registrations will be rejected.5.3 Innovators agree to receive communications from the Organizer during the Challenge.
+
+6. DURATION OF THE CHALLENGE
+
+    Announcement: 4 December 2024
+
+    Registration closes: 25 December 2024 (23:59 GMT)
+
+    Submissions accepted until: 15 January 2025
+
+    Judging period: 16–22 January 2025
+
+    Winners announced: 23 January 2025
+
+All dates refer to the UTC time zone.
+
+The Organizer may adjust dates if necessary and will notify participants via TAIKAI.
+
+7. PRINCIPLE OF THE CHALLENGE
+
+Teams must submit a Project that addresses the Challenge requirements described on the TAIKAI Challenge page.All deliverables must be submitted in English.
+
+8. DELIVERABLES
+
+The posted Challenge page details required deliverables, which may include:
+
+    Project description
+
+    Technical architecture
+
+    Demo video
+
+    Code repository
+
+    Pitch deck
+
+    Benchmark Results
+
+Files exceeding 15MB must be hosted externally and linked in the submission.
+
+If deliverables cannot be accessed or opened, Innovators must resubmit before the deadline or risk disqualification.
+
+Teams guarantee that all submitted content is their original work.
+
+9. SELECTION PROCESS
+
+9.1 Judging occurs from 16 to 22 January 2025.
+9.2 A panel of qualified judges appointed by the Organizer will evaluate Projects.
+9.3 Evaluation criteria may include (non-exhaustive):
+
+1. Conceptual & System Architecture Depth
+
+2. Problem Framing & Insight
+
+3. Trust & Verification Model
+
+4. Clarity & Documentation
+
+5. Creativity & Originality
+
+No voting will occur through tokens or chance mechanisms.
+
+9.4 Winners will be announced 23 January 2025.
+
+10. IMAGE COPYRIGHT
+
+Participants must use only copyright-free or properly licensed images, assets, or materials. The Organizer is not responsible for IP violations committed by Innovators.
+
+11. PRIZES
+
+Total Prize Pool: 1,000,000 $AMA tokens
+
+Non-Disbursement Clause
+
+The Organizer reserves the right not to distribute all or any portion of the Prize Pool if:
+
+    No Project meets minimum quality or eligibility thresholds.
+
+    No Project is deemed acceptable by the judges.
+
+    A winning Team is disqualified or fails KYC requirements (if applicable).
+
+This clause ensures prizes are awarded only to deserving, eligible Teams.
+
+Additional Prize Rules
+
+    Prizes are non-transferable, non-exchangeable, and cannot be redeemed for cash.
+
+    Winners are responsible for any taxes.
+
+    The Organizer is not liable for loss of access to tokens due to incorrect wallet details or user error.
+
+    Token awards are final once distributed.
+
+Token Disclaimer
+
+Participation in the Challenge does not constitute:
+
+    A sale of tokens
+
+    An investment offering
+
+    A promise of token value or appreciation
+
+$AMA tokens are awarded solely as prizes.
+
+12. INTELLECTUAL PROPERTY
+
+12.1 Innovators retain ownership of their submitted code, designs, and content.
+12.2 Projects with multiple Innovators constitute collaborative works.
+12.3 By participating, Teams grant the Organizer a non-exclusive, royalty-free, global license to:
+
+    Display Projects on the TAIKAI platform
+
+    Use submissions in promotional materials
+
+    Publicly reference the Project and Team
+
+12.4 Innovators warrant their work does not infringe any third-party rights.
+
+12.5 Innovators may continue to use and commercialize their Project after the Challenge.
+
+13. COMMUNICATION
+
+Winners authorize the Organizer to use their names, photos, affiliations, and submitted content for promotional purposes for up to 2 years at no additional compensation.
+
+14. LIABILITY
+
+The Organizer is not responsible for:
+
+    Internet disruptions
+
+    Platform outages
+
+    Loss of data
+
+    Late or unreceived submissions
+
+    Consequences of disqualification
+
+    Inability to deliver prizes due to participant error
+
+    Damages arising from prize use
+
+15. CONFIDENTIALITY
+
+Confidential Information includes any non-public data shared by the Organizer with Innovators.Innovators agree for 5 years to:
+
+    Use such information only for Challenge participation
+
+    Not disclose it beyond their Team
+
+    Return or delete it upon request
+
+16. RULES MODIFICATION
+
+The Organizer may modify these Rules at any time, including during the Challenge. Updated Rules will be posted on TAIKAI.
+
+17. CANCELLATION & SUSPENSION
+
+The Organizer may cancel or suspend the Challenge if:
+
+    Force majeure occurs
+
+    Fraud or abuse is detected
+
+    Operational needs require it
+
+No compensation will be provided for cancellations.
+
+18. INDEPENDENCE
+
+Participation does not create any employment or contractor relationship between Innovators and the Organizer.
+
+19. CLAIMS
+
+Claims must be submitted in writing within 30 days after Challenge completion.Claims regarding:
+
+    TAIKAI platform: must be sent to TAIKAI support.
+
+    Challenge administration or prizes: must be sent to the Organizer at:
+    Open Matrix Software LTD, Intershore Chambers, PO Box 4342, Road Town, Tortola, VG1110, British Virgin Islands
+
+Required claim details:
+
+    Innovator name & contact
+
+    Challenge identifier
+
+    Clear explanation of issue
+
+20. PRELIMINARY RECONCILIATION
+
+Before legal action, parties agree to attempt amicable settlement.If unresolved within 30 days, parties are free to pursue formal proceedings.
+
+21. GOVERNING LAW
+
+These Rules and the Challenge are governed exclusively by the laws of the British Virgin Islands.Any disputes shall be resolved in the courts of the British Virgin Islands.

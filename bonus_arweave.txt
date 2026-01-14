@@ -1,0 +1,13 @@
+BONUS: The Provenance Challenge - powered by Arweave
+
+Build transparent provenance for decentralized AI work
+
+Best Provenance Architecture will be awarded to the project that demonstrates the most effective use of Arweave for permanent storage and traceability of AI compute outputs, establishing transparent and immutable proof records.
+
+Create a pipeline to store and index AI compute outputs or proofs permanently on Arweave. Teams can connect miner simulations or zk proofs to store logs of miner runs or agent reasoning outputs as immutable provenance records.
+
+Goal: Build transparent provenance for decentralized AI work.
+
+Deliverables: Script or service linking miner/zk output → Arweave.
+
+Value: Demonstrates immutable AI proof storage and attribution, a foundation for future agent audit trails.

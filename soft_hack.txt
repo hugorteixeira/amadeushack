@@ -1,0 +1,87 @@
+SOFT HACK — IDEATHON TRACK
+
+The Soft Hack is a design + architecture challenge focused on imagining what can be built on Amadeus, either using today’s capabilities or anticipating future features like Nova Runtime.
+
+
+Preferred Verticals
+
+    DeFi trading agents
+
+    Sensor/perception agents
+
+    Risk evaluation agents
+
+    Compliance/KYC logic agents
+
+    Onchain AI marketplaces
+
+    Swarm coordination frameworks
+
+
+What NOT to propose
+
+    Web2 apps with a forced AMA label
+
+    CEX tokens or memecoins
+
+    Irrelevant NFTs
+
+    Pure frontends with no agent logic
+
+    Forks of existing DeFi apps with no innovation
+
+Your submission must include
+
+    ✔ Concept Deck: Clear overview, problem/solution, use cases.
+    ✔ Architecture Diagram: System components + data flow + agent roles.
+    ✔ Prototype / Mockups: UI, diagrams, logic flows, or code.
+    ✔ How Amadeus Is Used
+
+Optional: include bonus challenge to conceptually implement verified compute or permanent storage via ZK Verify or Arweave. Refer to BONUS challenge section for more details and additional perks.
+
+
+Submission Requirements
+
+Your proposal must include:
+
+    Concept Deck — problem, solution, and use cases
+
+    Architecture Diagram — components, data flow, agent roles
+
+    Prototype / Mockups — UI, logic flows, or code
+    Tradeoffs & Feasibility — what works now vs. what depends on future roadmap.
+
+    How Amadeus Is Used — integration with:
+
+        uPoW (future)
+
+        WASM runtime
+
+        State proofs
+
+        Agent identity/memory
+
+        Oracle streams
+
+        Swarm coordination
+
+Optional: BONUS challenge using ZK Verify or Arweave for verified compute or permanent storage.
+
+
+Evaluation Criteria
+
+    Creativity & Novelty — originality and differentiation
+
+    Technical Feasibility — can it be built today; are future assumptions valid?
+
+    Implementation Specificity — clear architecture, data flows, and build plan
+
+    Ecosystem Contribution — expands agent use cases, tooling, infra, or adoption
+
+    Documentation Quality — clarity, structure, completeness
+
+    Real-World Usefulness — solves an actual problem; credible usage path
+
+    Solves an actual problem
+
+    Has a plausible path to usage

@@ -1,0 +1,11 @@
+{
+  "name": "amadeus-upow-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@noble/hashes": "^1.8.0",
+    "@noble/curves": "^1.9.1",
+    "bs58": "^6.0.0"
+  }
+}

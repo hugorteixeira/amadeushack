@@ -1,0 +1,9 @@
+BONUS: The Proof Challenge – powered by zkVerify
+
+Make AI computation verifiable and auditable
+
+Design a mechanism to verify AI compute results (e.g. matrix ops or inference) using zero-knowledge proofs. Builders can use zkVerify’s SDK to create and validate SNARK circuits, linking verified compute to the Amadeus uPoW framework.
+
+Goal: Make AI computation verifiable and auditable.
+Deliverables: zk circuit + verifier demo or dashboard.
+Value: Establishes Amadeus as a leader in verifiable AI compute.

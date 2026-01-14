@@ -7,3 +7,6 @@
   hard/matmul/scripts/node_modules/
   *.log
 /node/
+hard/matmul/build_riscv/
+hard/matmul/matmul_cuda
+hard/matmul/src/matmul_cuda.o

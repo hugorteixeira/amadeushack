@@ -84,6 +84,12 @@ If you see `Illegal instruction`, keep `TT_USE_RDCYCLE=0`. In this mode the
 binary reports `elapsed_cycles` (may be zero) and the script falls back to host
 wall-clock timing for `elapsed_ms/gflops`.
 
+If the RISC-V run takes a long time, enable progress output:
+
+```bash
+TT_PROGRESS=1 ./benchmark_riscv.sh --runs 1
+```
+
 ## RISC-V diagnostics
 
 Generate a full simulator diagnostic bundle (profile + trace):

@@ -38,6 +38,10 @@ volatile int32_t g_c[16 * 16];
 #define TT_USE_RDCYCLE 0
 #endif
 
+#ifndef TT_PROGRESS
+#define TT_PROGRESS 0
+#endif
+
 static inline uint64_t rdcycle() {
 #if defined(__riscv) && __riscv_xlen == 32
     uint32_t hi1, lo, hi2;
@@ -155,6 +159,16 @@ int run_baremetal(int argc, char **argv) {
             }
             g_c[r * 16 + c] = sum;
         }
+#if TT_PROGRESS
+        const char tag[] = "row=";
+        char pbuf[32];
+        size_t pidx = 0;
+        std::memcpy(pbuf + pidx, tag, sizeof(tag) - 1);
+        pidx += sizeof(tag) - 1;
+        pidx += u64_to_dec(pbuf + pidx, static_cast<uint64_t>(r + 1));
+        pbuf[pidx++] = '\n';
+        (void)write(2, pbuf, pidx);
+#endif
     }
     uint64_t end_cycles = 0;
 #if TT_USE_RDCYCLE

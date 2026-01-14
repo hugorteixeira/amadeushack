@@ -75,9 +75,10 @@ if [[ -z "${SEED_HEX}" ]]; then
   if [[ -f "${SEED_BIN}" ]]; then
     echo "Using seed file: ${SEED_BIN}"
     if command -v python3 >/dev/null 2>&1; then
-      SEED_HEX=$(python3 - <<'PY'
+      SEED_HEX=$(python3 - "${SEED_BIN}" <<'PY'
+import sys
 from pathlib import Path
-print(Path("'"${SEED_BIN}"'").read_bytes().hex())
+print(Path(sys.argv[1]).read_bytes().hex())
 PY
 )
     elif command -v xxd >/dev/null 2>&1; then

@@ -18,6 +18,7 @@ RISCV_CXX=${RISCV_CXX:-}
 RISCV_RUNNER=${RISCV_RUNNER:-}
 RISCV_RUNNER_ARGS=${RISCV_RUNNER_ARGS:-}
 NO_OUTPUT=${NO_OUTPUT:-1}
+TT_BAREMETAL=${TT_BAREMETAL:-1}
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 MATMUL_DIR="${ROOT_DIR}/hard/matmul"
@@ -134,6 +135,9 @@ if [[ "${NO_BUILD}" != "1" ]]; then
 
   mkdir -p "${BUILD_DIR}/third_party/blake3" "${BUILD_DIR}/src"
   COMMON_DEFS="-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 -DBLAKE3_NO_AVX2 -DBLAKE3_NO_AVX512"
+  if [[ "${TT_BAREMETAL}" == "1" ]]; then
+    COMMON_DEFS+=" -DTT_BAREMETAL"
+  fi
   RISCV_CFLAGS="${RISCV_CFLAGS:--O3 -std=c11 ${COMMON_DEFS} -I${MATMUL_DIR}/third_party/blake3}"
   RISCV_CXXFLAGS="${RISCV_CXXFLAGS:--O3 -std=c++17 ${COMMON_DEFS} -I${MATMUL_DIR}/third_party/blake3}"
 
@@ -159,6 +163,10 @@ if [[ -z "${RISCV_RUNNER}" ]]; then
   fi
 fi
 
+if [[ -z "${RISCV_RUNNER_ARGS}" && "${RISCV_RUNNER}" == "/opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-run" ]]; then
+  RISCV_RUNNER_ARGS="--environment user --memory-size 256m"
+fi
+
 IFS=' ' read -r -a runner_args <<< "${RISCV_RUNNER_ARGS}"
 
 ELAPSED_FILE=$(mktemp)
@@ -166,18 +174,25 @@ GFLOPS_FILE=$(mktemp)
 trap 'rm -f "${ELAPSED_FILE}" "${GFLOPS_FILE}"' EXIT
 
 for i in $(seq 1 "${RUNS}"); do
+  cmd=("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow)
   if [[ -n "${SEED_HEX}" ]]; then
     if [[ "${NO_OUTPUT}" == "1" ]]; then
-      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-hex "${SEED_HEX}" --no-output)
+      cmd+=(--seed-hex "${SEED_HEX}" --no-output)
     else
-      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-hex "${SEED_HEX}" --output "${SOLUTION_OUT}")
+      cmd+=(--seed-hex "${SEED_HEX}" --output "${SOLUTION_OUT}")
     fi
   else
     if [[ "${NO_OUTPUT}" == "1" ]]; then
-      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-path "${SEED_BIN}" --no-output)
+      cmd+=(--seed-path "${SEED_BIN}" --no-output)
     else
-      output=$("${RISCV_RUNNER}" "${runner_args[@]}" "${BIN}" --upow --seed-path "${SEED_BIN}" --output "${SOLUTION_OUT}")
+      cmd+=(--seed-path "${SEED_BIN}" --output "${SOLUTION_OUT}")
     fi
+  fi
+
+  if ! output=$("${cmd[@]}" 2>&1); then
+    echo "${output}" >&2
+    echo "Runner failed." >&2
+    exit 1
   fi
   echo "${output}"
   elapsed=$(echo "${output}" | sed -n 's/.*"elapsed_ms":\([0-9.]*\).*/\1/p')

@@ -44,6 +44,13 @@ Requires a RISC-V toolchain and a runner (e.g., `qemu-riscv64` or a Tensix simul
 ./benchmark_riscv.sh --runs 5
 ```
 
+The RISC-V script defaults to `TT_BAREMETAL=1` to avoid dynamic memory and file I/O
+when running inside the Tensix simulator. To compile the full host-style binary:
+
+```bash
+TT_BAREMETAL=0 ./benchmark_riscv.sh --runs 5
+```
+
 Use a custom runner:
 
 ```bash

@@ -1,20 +1,104 @@
-#include <algorithm>
-#include <chrono>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
+#ifndef TT_BAREMETAL
+#include <algorithm>
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <random>
 #include <string>
 #include <vector>
+#endif
 
 #ifdef _OPENMP
 #include <omp.h>
 #endif
 
 #include "blake3.h"
+
+#ifdef TT_BAREMETAL
+namespace {
+constexpr size_t kSeedSize = 240;
+constexpr size_t kABytes = 16 * 50240;
+constexpr size_t kBBytes = 50240 * 16;
+constexpr size_t kABBytes = kABytes + kBBytes;
+
+uint8_t g_ab[kABBytes];
+int32_t g_c[16 * 16];
+
+int hex_val(char c) {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'f') return 10 + (c - 'a');
+    if (c >= 'A' && c <= 'F') return 10 + (c - 'A');
+    return -1;
+}
+
+bool hex_to_bytes(const char *hex, uint8_t *out, size_t out_len) {
+    size_t len = std::strlen(hex);
+    if (len != out_len * 2) return false;
+    for (size_t i = 0; i < out_len; ++i) {
+        int hi = hex_val(hex[2 * i]);
+        int lo = hex_val(hex[2 * i + 1]);
+        if (hi < 0 || lo < 0) return false;
+        out[i] = static_cast<uint8_t>((hi << 4) | lo);
+    }
+    return true;
+}
+
+int run_baremetal(int argc, char **argv) {
+    const char *seed_hex = nullptr;
+    bool no_output = false;
+    for (int i = 1; i < argc; ++i) {
+        if (std::strcmp(argv[i], "--seed-hex") == 0 && i + 1 < argc) {
+            seed_hex = argv[++i];
+        } else if (std::strcmp(argv[i], "--no-output") == 0) {
+            no_output = true;
+        }
+    }
+    if (!seed_hex) {
+        std::fprintf(stderr, "Missing --seed-hex\n");
+        return 1;
+    }
+
+    uint8_t seed[kSeedSize];
+    if (!hex_to_bytes(seed_hex, seed, kSeedSize)) {
+        std::fprintf(stderr, "Invalid seed hex\n");
+        return 1;
+    }
+
+    blake3_hasher hasher;
+    blake3_hasher_init(&hasher);
+    blake3_hasher_update(&hasher, seed, sizeof(seed));
+    blake3_hasher_finalize(&hasher, g_ab, sizeof(g_ab));
+
+    const uint8_t *a = g_ab;
+    const int8_t *b = reinterpret_cast<const int8_t *>(g_ab + kABytes);
+
+    for (int r = 0; r < 16; ++r) {
+        for (int c = 0; c < 16; ++c) {
+            int32_t sum = 0;
+            for (int k = 0; k < 50240; ++k) {
+                int a_val = static_cast<int>(a[r * 50240 + k]);
+                int b_val = static_cast<int>(b[k * 16 + c]);
+                sum += a_val * b_val;
+            }
+            g_c[r * 16 + c] = sum;
+        }
+    }
+
+    (void)no_output;
+    std::printf("{\"mode\":\"upow_baremetal\",\"elapsed_ms\":0,\"gflops\":0}\n");
+    return 0;
+}
+} // namespace
+
+int main(int argc, char **argv) {
+    return run_baremetal(argc, argv);
+}
+#else
 
 struct Options {
     int m = 256;
@@ -392,3 +476,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+#endif

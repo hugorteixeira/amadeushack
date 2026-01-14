@@ -6,3 +6,4 @@
   hard/matmul/*.o
   hard/matmul/scripts/node_modules/
   *.log
+/node/

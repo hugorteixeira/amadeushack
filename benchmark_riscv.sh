@@ -168,6 +168,9 @@ if [[ -z "${RISCV_RUNNER_ARGS}" && "${RISCV_RUNNER}" == "/opt/tenstorrent/sfpi/c
 fi
 
 IFS=' ' read -r -a runner_args <<< "${RISCV_RUNNER_ARGS}"
+if [[ "${TT_BAREMETAL}" == "1" && "${RISCV_RUNNER}" == "/opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-run" ]]; then
+  runner_args+=(--env-set "SEED_HEX=${SEED_HEX}")
+fi
 
 ELAPSED_FILE=$(mktemp)
 GFLOPS_FILE=$(mktemp)
@@ -189,7 +192,7 @@ for i in $(seq 1 "${RUNS}"); do
     fi
   fi
 
-  if ! output=$("${cmd[@]}" 2>&1); then
+  if ! output=$(SEED_HEX="${SEED_HEX}" "${cmd[@]}" 2>&1); then
     echo "${output}" >&2
     echo "Runner failed." >&2
     exit 1

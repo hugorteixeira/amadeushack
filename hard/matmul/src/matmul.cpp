@@ -59,7 +59,10 @@ int run_baremetal(int argc, char **argv) {
         }
     }
     if (!seed_hex) {
-        std::fprintf(stderr, "Missing --seed-hex\n");
+        seed_hex = std::getenv("SEED_HEX");
+    }
+    if (!seed_hex) {
+        std::fprintf(stderr, "Missing --seed-hex (or SEED_HEX env)\n");
         return 1;
     }
 

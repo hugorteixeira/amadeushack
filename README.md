@@ -64,6 +64,9 @@ environments. To write `solution.bin`, pass:
 ./benchmark_riscv.sh --runs 5 --write-output
 ```
 
+Note: the bare-metal build can read the seed from the `SEED_HEX` environment
+variable if program arguments are not forwarded by the simulator.
+
 ## Useful options (all scripts)
 
 - Use a different RPC:

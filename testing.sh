@@ -69,6 +69,9 @@ run_cmd_allow_fail info_arch "${RUNNER}" --info-architecture
 run_cmd_allow_fail info_hw "${RUNNER}" --info-hw
 run_cmd_allow_fail hw_list "${RUNNER}" --hw-list
 
+run_cmd_allow_fail opt_ls "ls" -lah /opt
+run_cmd_allow_fail opt_tt_find "find" /opt -maxdepth 4 -type f \( -iname "*tt*" -o -iname "*tensix*" -o -iname "*blackhole*" -o -iname "*ttnn*" -o -iname "*ttmetal*" \)
+
 run_cmd file file "${BIN}"
 run_cmd readelf /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-readelf -h "${BIN}"
 run_cmd objdump /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-objdump -f "${BIN}"

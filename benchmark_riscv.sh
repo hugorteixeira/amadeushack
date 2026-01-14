@@ -239,10 +239,17 @@ for i in $(seq 1 "${RUNS}"); do
 
   start_ns=$(now_ns)
 
-  if ! output=$(SEED_HEX="${SEED_HEX}" "${cmd[@]}" 2>&1); then
-    echo "${output}" >&2
-    echo "Runner failed." >&2
-    exit 1
+  if [[ "${TT_PROGRESS}" == "1" ]]; then
+    if ! output=$(SEED_HEX="${SEED_HEX}" "${cmd[@]}" 2> >(tee /dev/stderr)); then
+      echo "Runner failed." >&2
+      exit 1
+    fi
+  else
+    if ! output=$(SEED_HEX="${SEED_HEX}" "${cmd[@]}" 2>&1); then
+      echo "${output}" >&2
+      echo "Runner failed." >&2
+      exit 1
+    fi
   fi
 
   end_ns=$(now_ns)
@@ -283,7 +290,13 @@ PY
       fi
     fi
   fi
-  if [[ "${TT_BAREMETAL}" == "1" && ( -z "${elapsed}" || -z "${gflops}" || "${elapsed}" == "0" ) && "${host_elapsed_ms}" != "0" ]]; then
+  elapsed_is_zero=0
+  if [[ -z "${elapsed}" ]]; then
+    elapsed_is_zero=1
+  else
+    elapsed_is_zero=$(awk -v v="${elapsed}" 'BEGIN{print (v+0==0 ? 1 : 0)}')
+  fi
+  if [[ "${TT_BAREMETAL}" == "1" && ( -z "${gflops}" || "${elapsed_is_zero}" == "1" ) && "${host_elapsed_ms}" != "0" ]]; then
     elapsed="${host_elapsed_ms}"
     if command -v python3 >/dev/null 2>&1; then
       gflops=$(ELAPSED_MS="${elapsed}" python3 - <<'PY'

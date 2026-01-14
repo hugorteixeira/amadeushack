@@ -80,6 +80,20 @@ Generate a full simulator diagnostic bundle (profile + trace):
 ./testing.sh
 ```
 
+## Challenge B (Merkle proofs on RISC-V)
+
+Run the Merkle proof generator/verifier in the RISC-V simulator:
+
+```bash
+./benchmark_riscv_merkle.sh --runs 1
+```
+
+Tune parameters:
+
+```bash
+MERKLE_LEAVES=1024 MERKLE_PROOFS=32 MERKLE_ITERS=4 ./benchmark_riscv_merkle.sh --runs 1
+```
+
 ## x86_64 reference (optional)
 
 The x86_64 path is a secondary reference only:

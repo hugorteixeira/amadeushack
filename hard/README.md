@@ -33,6 +33,7 @@ from the public RPC and run locally. See `hard/matmul/README.md`.
 
 - `hard/matmul/`: C++ baseline + benchmark harness.
 - `hard/submit/submit_results.py`: placeholder submission helper.
+- `hard/merkle/`: Challenge B (Merkle proof generator/verifier) baseline.
 
 ## Optimization checklist
 

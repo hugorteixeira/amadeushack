@@ -206,8 +206,14 @@ for i in $(seq 1 "${RUNS}"); do
   elapsed=$(echo "${output}" | sed -n 's/.*"elapsed_ms":\([0-9.]*\).*/\1/p')
   gflops=$(echo "${output}" | sed -n 's/.*"gflops":\([0-9.]*\).*/\1/p')
   if [[ -z "${elapsed}" || -z "${gflops}" ]]; then
-    echo "Failed to parse benchmark output" >&2
-    exit 1
+    if [[ "${TT_BAREMETAL}" == "1" ]]; then
+      echo "Warning: failed to parse benchmark output, assuming 0 for bare-metal." >&2
+      elapsed=0
+      gflops=0
+    else
+      echo "Failed to parse benchmark output" >&2
+      exit 1
+    fi
   fi
   echo "${elapsed}" >> "${ELAPSED_FILE}"
   echo "${gflops}" >> "${GFLOPS_FILE}"

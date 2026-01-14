@@ -20,6 +20,7 @@
 #include "blake3.h"
 
 #ifdef TT_BAREMETAL
+#include <unistd.h>
 namespace {
 constexpr size_t kSeedSize = 240;
 constexpr size_t kABytes = 16 * 50240;
@@ -49,6 +50,7 @@ bool hex_to_bytes(const char *hex, uint8_t *out, size_t out_len) {
 }
 
 int run_baremetal(int argc, char **argv) {
+    setvbuf(stdout, nullptr, _IONBF, 0);
     const char *seed_hex = nullptr;
     bool no_output = false;
     for (int i = 1; i < argc; ++i) {
@@ -98,7 +100,8 @@ int run_baremetal(int argc, char **argv) {
     }
 
     (void)no_output;
-    std::printf("{\"mode\":\"upow_baremetal\",\"elapsed_ms\":0,\"gflops\":0}\n");
+    const char msg[] = "{\"mode\":\"upow_baremetal\",\"elapsed_ms\":0,\"gflops\":0}\n";
+    (void)write(1, msg, sizeof(msg) - 1);
     return 0;
 }
 } // namespace

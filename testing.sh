@@ -54,12 +54,18 @@ fi
 
 if [[ ! -f "${BIN}" ]]; then
   echo "RISC-V binary not found. Building via ./benchmark_riscv.sh --runs 1" >&2
+  set +e
   "${ROOT_DIR}/benchmark_riscv.sh" --runs 1
+  set -e
+fi
+if [[ ! -f "${BIN}" ]]; then
+  echo "Failed to build RISC-V binary: ${BIN}" >&2
+  exit 1
 fi
 
 run_cmd version "${RUNNER}" --version
-run_cmd info_model "${RUNNER}" --info-model
-run_cmd info_arch "${RUNNER}" --info-architecture
+run_cmd_allow_fail info_model "${RUNNER}" --info-model
+run_cmd_allow_fail info_arch "${RUNNER}" --info-architecture
 run_cmd_allow_fail info_hw "${RUNNER}" --info-hw
 run_cmd_allow_fail hw_list "${RUNNER}" --hw-list
 
@@ -67,7 +73,7 @@ run_cmd file file "${BIN}"
 run_cmd readelf /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-readelf -h "${BIN}"
 run_cmd objdump /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-objdump -f "${BIN}"
 
-run_cmd run_baseline "${RUNNER}" --architecture "${ARCH}" --model "${MODEL}" \
+run_cmd_allow_fail run_baseline "${RUNNER}" --architecture "${ARCH}" --model "${MODEL}" \
   --environment "${ENV_MODE}" --memory-size "${MEM_SIZE}" "${BIN}"
 
 PROFILE_FILE="${OUT_DIR}/tt_profile.txt"

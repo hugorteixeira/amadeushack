@@ -215,10 +215,31 @@ for i in $(seq 1 "${RUNS}"); do
   if [[ -z "${elapsed}" || -z "${gflops}" ]]; then
     elapsed_cycles=$(echo "${output}" | sed -n 's/.*"elapsed_cycles":\([0-9]*\).*/\1/p')
     if [[ -n "${elapsed_cycles}" ]]; then
-      read -r elapsed gflops < <(awk -v cyc="${elapsed_cycles}" -v hz="${TT_CPU_HZ}" 'BEGIN{
-        if (cyc==0) {ms=0; g=0} else {ms=cyc*1000.0/hz; g=(2.0*16.0*16.0*50240.0*hz)/(cyc*1e9)}
-        printf "%.6f %.6f", ms, g
-      }')
+      calc=""
+      if command -v python3 >/dev/null 2>&1; then
+        calc=$(python3 - <<'PY'
+import os
+cyc = int(os.environ.get("ELAPSED_CYCLES", "0"))
+hz = int(os.environ.get("TT_CPU_HZ", "1000000000"))
+if cyc == 0:
+    ms = 0.0
+    g = 0.0
+else:
+    ms = (cyc * 1000.0) / hz
+    g = (2.0 * 16.0 * 16.0 * 50240.0 * hz) / (cyc * 1e9)
+print(f"{ms:.6f} {g:.6f}")
+PY
+ELAPSED_CYCLES="${elapsed_cycles}" TT_CPU_HZ="${TT_CPU_HZ}" ) || true
+      elif command -v awk >/dev/null 2>&1; then
+        calc=$(awk -v cyc="${elapsed_cycles}" -v hz="${TT_CPU_HZ}" 'BEGIN{
+          if (cyc==0) {ms=0; g=0} else {ms=cyc*1000.0/hz; g=(2.0*16.0*16.0*50240.0*hz)/(cyc*1e9)}
+          printf "%.6f %.6f", ms, g
+        }') || true
+      fi
+      if [[ -n "${calc}" ]]; then
+        elapsed=${calc%% *}
+        gflops=${calc##* }
+      fi
     fi
   fi
   if [[ -z "${elapsed}" || -z "${gflops}" ]]; then
@@ -237,7 +258,23 @@ for i in $(seq 1 "${RUNS}"); do
 done
 
 stats() {
-  awk 'NR==1{min=max=$1} {sum+=$1; sumsq+=$1*$1; if($1<min)min=$1; if($1>max)max=$1} END{mean=sum/NR; var=sumsq/NR-mean*mean; if(var<0)var=0; printf "avg=%.4f std=%.4f min=%.4f max=%.4f", mean, sqrt(var), min, max}'
+  if command -v python3 >/dev/null 2>&1; then
+    python3 - <<'PY'
+import math, sys
+vals = [float(x.strip()) for x in sys.stdin if x.strip()]
+if not vals:
+    print("avg=0.0000 std=0.0000 min=0.0000 max=0.0000")
+    raise SystemExit(0)
+mean = sum(vals) / len(vals)
+var = sum((v - mean) ** 2 for v in vals) / len(vals)
+std = math.sqrt(max(var, 0.0))
+print(f"avg={mean:.4f} std={std:.4f} min={min(vals):.4f} max={max(vals):.4f}")
+PY
+  elif command -v awk >/dev/null 2>&1; then
+    awk 'NR==1{min=max=$1} {sum+=$1; sumsq+=$1*$1; if($1<min)min=$1; if($1>max)max=$1} END{mean=sum/NR; var=sumsq/NR-mean*mean; if(var<0)var=0; printf "avg=%.4f std=%.4f min=%.4f max=%.4f", mean, sqrt(var), min, max}'
+  else
+    echo "avg=0.0000 std=0.0000 min=0.0000 max=0.0000"
+  fi
 }
 
 echo "elapsed_ms: $(stats < "${ELAPSED_FILE}")"

@@ -28,7 +28,7 @@ constexpr size_t kBBytes = 50240 * 16;
 constexpr size_t kABBytes = kABytes + kBBytes;
 
 uint8_t g_ab[kABBytes];
-int32_t g_c[16 * 16];
+volatile int32_t g_c[16 * 16];
 
 #ifndef TT_CPU_HZ
 #define TT_CPU_HZ 1000000000ULL
@@ -71,6 +71,17 @@ static size_t u64_to_dec(char *dst, uint64_t value) {
         dst[i] = tmp[pos - 1 - i];
     }
     return pos;
+}
+
+static size_t i64_to_dec(char *dst, int64_t value) {
+    size_t idx = 0;
+    uint64_t mag = static_cast<uint64_t>(value);
+    if (value < 0) {
+        dst[idx++] = '-';
+        mag = static_cast<uint64_t>(-value);
+    }
+    idx += u64_to_dec(dst + idx, mag);
+    return idx;
 }
 
 int hex_val(char c) {
@@ -152,6 +163,10 @@ int run_baremetal(int argc, char **argv) {
 
     (void)no_output;
     uint64_t elapsed_cycles = end_cycles - start_cycles;
+    int64_t checksum = 0;
+    for (int i = 0; i < 16 * 16; ++i) {
+        checksum += static_cast<int64_t>(g_c[i]);
+    }
     char buf[200];
     size_t idx = 0;
     const char prefix[] = "{\"mode\":\"upow_baremetal\",\"elapsed_cycles\":";
@@ -162,6 +177,10 @@ int run_baremetal(int argc, char **argv) {
     std::memcpy(buf + idx, mid, sizeof(mid) - 1);
     idx += sizeof(mid) - 1;
     idx += u64_to_dec(buf + idx, static_cast<uint64_t>(TT_CPU_HZ));
+    const char mid2[] = ",\"checksum\":";
+    std::memcpy(buf + idx, mid2, sizeof(mid2) - 1);
+    idx += sizeof(mid2) - 1;
+    idx += i64_to_dec(buf + idx, checksum);
     buf[idx++] = '}';
     buf[idx++] = '\n';
     (void)write(1, buf, idx);

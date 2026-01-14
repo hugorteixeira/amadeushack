@@ -2,6 +2,10 @@ CC ?= gcc
 CXX ?= g++
 CFLAGS ?= -O3 -std=c11
 CXXFLAGS ?= -O3 -std=c++17
+
+# Use portable BLAKE3 on environments without SIMD object files.
+CFLAGS += -DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 -DBLAKE3_NO_AVX2 -DBLAKE3_NO_AVX512
+CXXFLAGS += -DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 -DBLAKE3_NO_AVX2 -DBLAKE3_NO_AVX512
 LDFLAGS ?=
 
 BLAKE3_DIR = third_party/blake3

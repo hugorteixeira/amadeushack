@@ -84,6 +84,14 @@ If you see `Illegal instruction`, keep `TT_USE_RDCYCLE=0`. In this mode the
 binary reports `elapsed_cycles` and the script computes `elapsed_ms/gflops` on
 the host.
 
+## RISC-V diagnostics
+
+Generate a full simulator diagnostic bundle (profile + trace):
+
+```bash
+./testing.sh
+```
+
 ## Useful options (all scripts)
 
 - Use a different RPC:

@@ -73,6 +73,21 @@ cd hard/matmul/scripts
 RPC_URL=https://nodes.amadeus.bot ./run_upow.sh
 ```
 
+## End-to-end benchmark script
+
+This script generates the seed (Node 18+ required), compiles, and runs the uPoW matmul.
+
+```bash
+cd hard/matmul/scripts
+./benchmark.sh
+```
+
+If Node is not available on the instance, generate `seed_hex` on your local machine and pass it in:
+
+```bash
+SEED_HEX=... ./benchmark.sh --no-build
+```
+
 Optional validation (local testnet node only):
 
 ```bash

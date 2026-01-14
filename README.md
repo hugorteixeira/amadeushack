@@ -80,8 +80,9 @@ If the simulator supports `rdcycle`, enable it explicitly:
 TT_USE_RDCYCLE=1 ./benchmark_riscv.sh --runs 1
 ```
 
-If you see `Illegal instruction`, keep `TT_USE_RDCYCLE=0` and the script will
-report `elapsed_ms=0` for bare-metal.
+If you see `Illegal instruction`, keep `TT_USE_RDCYCLE=0`. In this mode the
+binary reports `elapsed_cycles` and the script computes `elapsed_ms/gflops` on
+the host.
 
 ## Useful options (all scripts)
 

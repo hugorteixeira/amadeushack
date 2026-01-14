@@ -56,6 +56,23 @@ static inline uint64_t rdcycle() {
 #endif
 }
 
+static size_t u64_to_dec(char *dst, uint64_t value) {
+    char tmp[32];
+    size_t pos = 0;
+    if (value == 0) {
+        dst[0] = '0';
+        return 1;
+    }
+    while (value > 0) {
+        tmp[pos++] = static_cast<char>('0' + (value % 10));
+        value /= 10;
+    }
+    for (size_t i = 0; i < pos; ++i) {
+        dst[i] = tmp[pos - 1 - i];
+    }
+    return pos;
+}
+
 int hex_val(char c) {
     if (c >= '0' && c <= '9') return c - '0';
     if (c >= 'a' && c <= 'f') return 10 + (c - 'a');
@@ -135,20 +152,19 @@ int run_baremetal(int argc, char **argv) {
 
     (void)no_output;
     uint64_t elapsed_cycles = end_cycles - start_cycles;
-    double elapsed_ms = (elapsed_cycles == 0)
-        ? 0.0
-        : (static_cast<double>(elapsed_cycles) * 1000.0) / static_cast<double>(TT_CPU_HZ);
-    double ops = 2.0 * 16.0 * 16.0 * 50240.0;
-    double gflops = (elapsed_cycles == 0)
-        ? 0.0
-        : (ops * static_cast<double>(TT_CPU_HZ)) / (static_cast<double>(elapsed_cycles) * 1e9);
-    char buf[160];
-    int n = std::snprintf(buf, sizeof(buf),
-                          "{\"mode\":\"upow_baremetal\",\"elapsed_ms\":%.6f,\"gflops\":%.6f}\n",
-                          elapsed_ms, gflops);
-    if (n > 0) {
-        (void)write(1, buf, static_cast<size_t>(n));
-    }
+    char buf[200];
+    size_t idx = 0;
+    const char prefix[] = "{\"mode\":\"upow_baremetal\",\"elapsed_cycles\":";
+    std::memcpy(buf + idx, prefix, sizeof(prefix) - 1);
+    idx += sizeof(prefix) - 1;
+    idx += u64_to_dec(buf + idx, elapsed_cycles);
+    const char mid[] = ",\"cpu_hz\":";
+    std::memcpy(buf + idx, mid, sizeof(mid) - 1);
+    idx += sizeof(mid) - 1;
+    idx += u64_to_dec(buf + idx, static_cast<uint64_t>(TT_CPU_HZ));
+    buf[idx++] = '}';
+    buf[idx++] = '\n';
+    (void)write(1, buf, idx);
     return 0;
 }
 } // namespace

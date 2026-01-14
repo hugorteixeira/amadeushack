@@ -213,6 +213,15 @@ for i in $(seq 1 "${RUNS}"); do
   elapsed=$(echo "${output}" | sed -n 's/.*"elapsed_ms":\([0-9.]*\).*/\1/p')
   gflops=$(echo "${output}" | sed -n 's/.*"gflops":\([0-9.]*\).*/\1/p')
   if [[ -z "${elapsed}" || -z "${gflops}" ]]; then
+    elapsed_cycles=$(echo "${output}" | sed -n 's/.*"elapsed_cycles":\([0-9]*\).*/\1/p')
+    if [[ -n "${elapsed_cycles}" ]]; then
+      read -r elapsed gflops < <(awk -v cyc="${elapsed_cycles}" -v hz="${TT_CPU_HZ}" 'BEGIN{
+        if (cyc==0) {ms=0; g=0} else {ms=cyc*1000.0/hz; g=(2.0*16.0*16.0*50240.0*hz)/(cyc*1e9)}
+        printf "%.6f %.6f", ms, g
+      }')
+    fi
+  fi
+  if [[ -z "${elapsed}" || -z "${gflops}" ]]; then
     if [[ "${TT_BAREMETAL}" == "1" ]]; then
       echo "Warning: failed to parse benchmark output, assuming 0 for bare-metal." >&2
       elapsed=0

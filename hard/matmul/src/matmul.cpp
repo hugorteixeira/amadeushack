@@ -318,7 +318,7 @@ int main(int argc, char **argv) {
         blake3_hasher hasher;
         blake3_hasher_init(&hasher);
         blake3_hasher_update(&hasher, seed.data(), seed.size());
-        blake3_hasher_finalize_xof(&hasher, ab.data(), ab.size());
+        blake3_hasher_finalize(&hasher, ab.data(), ab.size());
 
         std::vector<uint8_t> a_bytes(kABytes);
         std::vector<int8_t> b_bytes(kBBytes);

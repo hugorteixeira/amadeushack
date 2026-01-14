@@ -1,4 +1,6 @@
+CC ?= gcc
 CXX ?= g++
+CFLAGS ?= -O3 -std=c11
 CXXFLAGS ?= -O3 -std=c++17
 LDFLAGS ?=
 
@@ -8,16 +10,25 @@ BLAKE3_SRCS = \
 	$(BLAKE3_DIR)/blake3_dispatch.c \
 	$(BLAKE3_DIR)/blake3_portable.c
 
+CFLAGS += -I$(BLAKE3_DIR)
 CXXFLAGS += -I$(BLAKE3_DIR)
 
 ifdef OPENMP
 CXXFLAGS += -fopenmp
 endif
 
+OBJS = src/matmul.o $(BLAKE3_SRCS:.c=.o)
+
 all: matmul
 
-matmul: src/matmul.cpp $(BLAKE3_SRCS)
+matmul: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
+src/matmul.o: src/matmul.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BLAKE3_DIR)/%.o: $(BLAKE3_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
 clean:
-	rm -f matmul
+	rm -f matmul $(OBJS)

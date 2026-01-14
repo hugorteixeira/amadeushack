@@ -61,8 +61,13 @@ int run_baremetal(int argc, char **argv) {
     if (!seed_hex) {
         seed_hex = std::getenv("SEED_HEX");
     }
+#ifdef TT_SEED_HEX
     if (!seed_hex) {
-        std::fprintf(stderr, "Missing --seed-hex (or SEED_HEX env)\n");
+        seed_hex = TT_SEED_HEX;
+    }
+#endif
+    if (!seed_hex) {
+        std::fprintf(stderr, "Missing --seed-hex (or SEED_HEX env / TT_SEED_HEX)\n");
         return 1;
     }
 

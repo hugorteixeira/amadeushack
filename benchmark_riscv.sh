@@ -140,6 +140,10 @@ if [[ "${NO_BUILD}" != "1" ]]; then
   fi
   RISCV_CFLAGS="${RISCV_CFLAGS:--O3 -std=c11 ${COMMON_DEFS} -I${MATMUL_DIR}/third_party/blake3}"
   RISCV_CXXFLAGS="${RISCV_CXXFLAGS:--O3 -std=c++17 ${COMMON_DEFS} -I${MATMUL_DIR}/third_party/blake3}"
+  if [[ "${TT_BAREMETAL}" == "1" ]]; then
+    SEED_DEFINE="-DTT_SEED_HEX=\\\"${SEED_HEX}\\\""
+    RISCV_CXXFLAGS="${RISCV_CXXFLAGS} ${SEED_DEFINE}"
+  fi
 
   "${RISCV_CC}" ${RISCV_CFLAGS} -c "${MATMUL_DIR}/third_party/blake3/blake3.c" -o "${BUILD_DIR}/third_party/blake3/blake3.o"
   "${RISCV_CC}" ${RISCV_CFLAGS} -c "${MATMUL_DIR}/third_party/blake3/blake3_dispatch.c" -o "${BUILD_DIR}/third_party/blake3/blake3_dispatch.o"

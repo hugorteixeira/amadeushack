@@ -83,6 +83,10 @@ PY
 )
     elif command -v xxd >/dev/null 2>&1; then
       SEED_HEX=$(xxd -p -c 100000 "${SEED_BIN}" | tr -d '\n')
+    elif command -v hexdump >/dev/null 2>&1; then
+      SEED_HEX=$(hexdump -v -e '1/1 "%02x"' "${SEED_BIN}")
+    elif command -v od >/dev/null 2>&1; then
+      SEED_HEX=$(od -An -tx1 -v "${SEED_BIN}" | tr -d ' \n')
     fi
   else
     if ! command -v node >/dev/null 2>&1; then
@@ -107,6 +111,11 @@ PY
       exit 1
     fi
   fi
+fi
+
+if [[ -z "${SEED_HEX}" ]]; then
+  echo "Failed to derive SEED_HEX from ${SEED_BIN}. Install python3/xxd/hexdump or set SEED_HEX." >&2
+  exit 1
 fi
 
 if [[ "${NO_BUILD}" != "1" ]]; then

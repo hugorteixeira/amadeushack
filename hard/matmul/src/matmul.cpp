@@ -296,7 +296,12 @@ static void matmul_upow(const std::vector<uint8_t> &a, const std::vector<int8_t>
 
 int main(int argc, char **argv) {
     Options opt;
-    for (int i = 1; i < argc; ++i) {
+    int start = 1;
+    // Some runners pass a mount/root path as the first argument.
+    if (argc > 1 && argv[1][0] == '/') {
+        start = 2;
+    }
+    for (int i = start; i < argc; ++i) {
         if (!parse_arg(argc, argv, i, opt)) {
             std::fprintf(stderr, "Unknown arg: %s\n", argv[i]);
             usage(argv[0]);

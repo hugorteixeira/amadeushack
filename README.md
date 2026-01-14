@@ -1,8 +1,88 @@
-# Amadeus Hack - Quick Run
+# Amadeus Hack - RISC-V MatMul Solver
 
-This repo contains the hard-track MatMul solver and helper scripts. The judges can run the multi-run benchmark from the repo root.
+This repo is focused on the hard-track RISC-V MatMul solver. The main entrypoint
+for judges is the RISC-V benchmark script in the repo root.
 
-## Quick benchmark (x86_64, multi-run)
+## RISC-V quick start (primary)
+
+```bash
+./benchmark_riscv.sh --runs 1
+```
+
+This builds a RISC-V binary (bare-metal by default) and runs the uPoW MatMul
+inside the Tensix simulator / RISC-V runner. The output includes:
+
+- The RISC-V program JSON (from the simulator).
+- `run=... elapsed_ms=... gflops=... host_elapsed_ms=...`
+
+Note: some simulators do not expose cycle counters. In that case, the script
+falls back to host wall-clock timing (`host_elapsed_ms`) for `elapsed_ms/gflops`.
+
+## Seed generation
+
+If the instance does not have Node 18+, generate the seed on your local machine
+and pass it as `SEED_HEX`:
+
+```bash
+cd hard/matmul/scripts
+npm install
+node build_seed.mjs --generate --rpc https://nodes.amadeus.bot --out ../seed.bin
+```
+
+Then run on the instance:
+
+```bash
+SEED_HEX=... ./benchmark_riscv.sh --runs 1
+```
+
+You can also use an existing seed file:
+
+```bash
+./benchmark_riscv.sh --runs 1 --seed-bin hard/matmul/seed.bin
+```
+
+## RISC-V tuning and options
+
+- Bare-metal build (default, avoids file I/O):
+  ```bash
+  TT_BAREMETAL=1 ./benchmark_riscv.sh --runs 1
+  ```
+- Full host-style binary (if your runner supports syscalls):
+  ```bash
+  TT_BAREMETAL=0 ./benchmark_riscv.sh --runs 1
+  ```
+- Progress output (prints `row=1..16` on stderr):
+  ```bash
+  TT_PROGRESS=1 ./benchmark_riscv.sh --runs 1
+  ```
+- If `rdcycle` is supported by your simulator:
+  ```bash
+  TT_USE_RDCYCLE=1 ./benchmark_riscv.sh --runs 1
+  ```
+- CPU frequency for cycle-based timing (default 1 GHz):
+  ```bash
+  TT_CPU_HZ=1500000000 ./benchmark_riscv.sh --runs 1
+  ```
+- Write `solution.bin`:
+  ```bash
+  ./benchmark_riscv.sh --runs 1 --write-output
+  ```
+- Custom runner:
+  ```bash
+  RISCV_RUNNER=/path/to/runner RISCV_RUNNER_ARGS="--flag value" ./benchmark_riscv.sh --runs 1
+  ```
+
+## RISC-V diagnostics
+
+Generate a full simulator diagnostic bundle (profile + trace):
+
+```bash
+./testing.sh
+```
+
+## x86_64 reference (optional)
+
+The x86_64 path is a secondary reference only:
 
 ```bash
 ./benchmark.sh --runs 5
@@ -13,102 +93,3 @@ Alias:
 ```bash
 ./benchmark_x86.sh --runs 5
 ```
-
-The script will:
-- Generate a uPoW seed (requires Node 18+ and internet), or use an existing seed file.
-- Build the `matmul` binary.
-- Run the uPoW matmul multiple times.
-- Print average and stddev for `elapsed_ms` and `gflops`.
-
-## If Node 18+ is NOT available on the instance
-
-Generate the seed hex on your local machine, then pass it to the benchmark:
-
-```bash
-cd hard/matmul/scripts
-npm install
-node build_seed.mjs --generate --rpc https://nodes.amadeus.bot --out ../seed.bin
-```
-
-Copy the `seed_hex=...` value and run:
-
-```bash
-SEED_HEX=... ./benchmark.sh --runs 5
-```
-
-## RISC-V version
-
-Requires a RISC-V toolchain and a runner (e.g., `qemu-riscv64` or a Tensix simulator).
-
-```bash
-./benchmark_riscv.sh --runs 5
-```
-
-The RISC-V script defaults to `TT_BAREMETAL=1` to avoid dynamic memory and file I/O
-when running inside the Tensix simulator. To compile the full host-style binary:
-
-```bash
-TT_BAREMETAL=0 ./benchmark_riscv.sh --runs 5
-```
-
-Use a custom runner:
-
-```bash
-RISCV_RUNNER=/path/to/runner RISCV_RUNNER_ARGS="--flag value" ./benchmark_riscv.sh --runs 5
-```
-
-By default, the RISC-V script runs with `--no-output` to avoid filesystem calls in bare-metal
-environments. To write `solution.bin`, pass:
-
-```bash
-./benchmark_riscv.sh --runs 5 --write-output
-```
-
-Note: the bare-metal build embeds the seed at compile time (via `TT_SEED_HEX`)
-and can also read `SEED_HEX` from the environment if program arguments are not
-forwarded by the simulator.
-
-To set the CPU frequency for cycle-based timing (default 1 GHz):
-
-```bash
-TT_CPU_HZ=1500000000 ./benchmark_riscv.sh --runs 1
-```
-
-If the simulator supports `rdcycle`, enable it explicitly:
-
-```bash
-TT_USE_RDCYCLE=1 ./benchmark_riscv.sh --runs 1
-```
-
-If you see `Illegal instruction`, keep `TT_USE_RDCYCLE=0`. In this mode the
-binary reports `elapsed_cycles` (may be zero) and the script falls back to host
-wall-clock timing for `elapsed_ms/gflops`.
-
-If the RISC-V run takes a long time, enable progress output:
-
-```bash
-TT_PROGRESS=1 ./benchmark_riscv.sh --runs 1
-```
-
-## RISC-V diagnostics
-
-Generate a full simulator diagnostic bundle (profile + trace):
-
-```bash
-./testing.sh
-```
-
-## Useful options (all scripts)
-
-- Use a different RPC:
-  ```bash
-  RPC_URL=https://testnet.ama.one ./benchmark.sh --runs 5
-  ```
-- Skip rebuild if already compiled:
-  ```bash
-  ./benchmark.sh --runs 5 --no-build
-  ```
-- Use an existing seed file:
-  ```bash
-  ./benchmark.sh --runs 5 --seed-bin hard/matmul/seed.bin
-  ```

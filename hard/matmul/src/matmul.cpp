@@ -150,14 +150,17 @@ int run_baremetal(int argc, char **argv) {
     start_cycles = rdcycle();
 #endif
     for (int r = 0; r < 16; ++r) {
-        for (int c = 0; c < 16; ++c) {
-            int32_t sum = 0;
-            for (int k = 0; k < 50240; ++k) {
-                int a_val = static_cast<int>(a[r * 50240 + k]);
-                int b_val = static_cast<int>(b[k * 16 + c]);
-                sum += a_val * b_val;
+        int32_t acc[16] = {0};
+        const uint8_t *row_a = a + r * 50240;
+        for (int k = 0; k < 50240; ++k) {
+            int32_t av = static_cast<int32_t>(row_a[k]);
+            const int8_t *row_b = b + k * 16;
+            for (int j = 0; j < 16; ++j) {
+                acc[j] += av * static_cast<int32_t>(row_b[j]);
             }
-            g_c[r * 16 + c] = sum;
+        }
+        for (int j = 0; j < 16; ++j) {
+            g_c[r * 16 + j] = acc[j];
         }
 #if TT_PROGRESS
         const char tag[] = "row=";

@@ -90,41 +90,10 @@ RPC_URL=https://testnet.ama.one VALIDATE_URL=https://testnet.ama.one/api/upow/va
   RISCV_RUNNER=/path/to/runner RISCV_RUNNER_ARGS="--flag value" ./benchmark_riscv.sh --runs 1
   ```
 
-## RISC-V diagnostics
+## Challenge B (Merkle proofs)
 
-Generate a full simulator diagnostic bundle (profile + trace):
-
-```bash
-./testing.sh
-```
-
-## Challenge B (Merkle proofs on RISC-V)
-
-Run the Merkle proof generator/verifier in the RISC-V simulator:
-
-```bash
-./benchmark_riscv_merkle.sh --runs 1
-```
-
-Tune parameters:
-
-```bash
-MERKLE_LEAVES=1024 MERKLE_PROOFS=32 MERKLE_ITERS=4 ./benchmark_riscv_merkle.sh --runs 1
-```
-
-## x86_64 reference (optional)
-
-The x86_64 path is a secondary reference only:
-
-```bash
-./benchmark.sh --runs 5
-```
-
-Alias:
-
-```bash
-./benchmark_x86.sh --runs 5
-```
+Sources live in `hard/merkle`. Build with `make` (or set `CC`/`CXX` for RISC-V)
+and run with your RISC-V runner.
 
 ## Hard Hack requirements (from developer_onboarding.pdf)
 

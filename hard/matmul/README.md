@@ -66,32 +66,18 @@ If you already have a Base58 seed:
 node build_seed.mjs --seed-base58 <SEED_BASE58> --rpc https://nodes.amadeus.bot --out ../seed.bin
 ```
 
-## One-shot runner
+## One-shot validation (repo root)
+
+Run the end-to-end RISC-V flow (seed + matmul + validate) from the repo root:
 
 ```bash
-cd hard/matmul/scripts
-RPC_URL=https://nodes.amadeus.bot ./run_upow.sh
+bash run_riscv_validate.sh
 ```
 
-## End-to-end benchmark script
-
-This script generates the seed (Node 18+ required), compiles, and runs the uPoW matmul.
+Override defaults if needed:
 
 ```bash
-cd hard/matmul/scripts
-./benchmark.sh
-```
-
-If Node is not available on the instance, generate `seed_hex` on your local machine and pass it in:
-
-```bash
-SEED_HEX=... ./benchmark.sh --no-build
-```
-
-Optional validation (local testnet node only):
-
-```bash
-VALIDATE_URL=http://127.0.0.1:8080/api/upow/validate ./run_upow.sh
+RPC_URL=https://testnet.ama.one VALIDATE_URL=https://testnet.ama.one/api/upow/validate bash run_riscv_validate.sh
 ```
 
 ## Benchmark sweep

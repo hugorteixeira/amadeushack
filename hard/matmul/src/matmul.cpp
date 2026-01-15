@@ -111,7 +111,7 @@ bool hex_to_bytes(const char *hex, uint8_t *out, size_t out_len) {
     return true;
 }
 
-void write_hex(int fd, const uint8_t *data, size_t len) {
+void write_hex(int fd, const volatile uint8_t *data, size_t len) {
     static const char kHex[] = "0123456789abcdef";
     char out[256];
     size_t idx = 0;
@@ -236,7 +236,7 @@ int run_baremetal(int argc, char **argv) {
         const char prefix[] = "solution_hex=";
         (void)write(1, prefix, sizeof(prefix) - 1);
         write_hex(1, seed, sizeof(seed));
-        write_hex(1, reinterpret_cast<const uint8_t *>(g_c), sizeof(g_c));
+        write_hex(1, reinterpret_cast<const volatile uint8_t *>(g_c), sizeof(g_c));
         (void)write(1, "\n", 1);
     }
     return 0;

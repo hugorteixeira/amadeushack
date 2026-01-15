@@ -9,24 +9,22 @@ It uses BLAKE3 and is designed to run in the RISC-V simulator (bare-metal).
 make
 ```
 
-## RISC-V build + run
+## RISC-V build + run (manual)
 
-Use the repo-level script:
-
-```bash
-./benchmark_riscv_merkle.sh --runs 1
-```
-
-## Parameters
-
-You can customize the tree size and proof count via env vars:
+Cross-compile by setting your toolchain (and optional compile-time parameters):
 
 ```bash
-MERKLE_LEAVES=1024 MERKLE_PROOFS=32 MERKLE_ITERS=4 ./benchmark_riscv_merkle.sh --runs 1
+CC=riscv64-unknown-linux-gnu-gcc CXX=riscv64-unknown-linux-gnu-g++ \
+CFLAGS="-O3 -std=c11 -DMERKLE_LEAVES=1024 -DMERKLE_PROOFS=32 -DMERKLE_ITERS=4" \
+CXXFLAGS="-O3 -std=c++17 -DMERKLE_LEAVES=1024 -DMERKLE_PROOFS=32 -DMERKLE_ITERS=4" \
+make
 ```
 
-To show progress (prints `iter=...` to stderr):
+Run with your RISC-V runner (example):
 
 ```bash
-MERKLE_PROGRESS=1 ./benchmark_riscv_merkle.sh --runs 1
+riscv-tt-elf-run --environment user --memory-size 256m merkle
 ```
+
+Use `-DMERKLE_PROGRESS=1` to print `iter=...` to stderr, and `-DMERKLE_SEED_HEX=...`
+to override the default seed.

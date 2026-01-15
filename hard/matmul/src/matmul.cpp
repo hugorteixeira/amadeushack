@@ -42,6 +42,10 @@ volatile int32_t g_c[16 * 16];
 #define TT_PROGRESS 0
 #endif
 
+#ifndef TT_PRINT_SOLUTION
+#define TT_PRINT_SOLUTION 0
+#endif
+
 static inline uint64_t rdcycle() {
 #if defined(__riscv) && __riscv_xlen == 32
     uint32_t hi1, lo, hi2;
@@ -107,15 +111,36 @@ bool hex_to_bytes(const char *hex, uint8_t *out, size_t out_len) {
     return true;
 }
 
+void write_hex(int fd, const uint8_t *data, size_t len) {
+    static const char kHex[] = "0123456789abcdef";
+    char out[256];
+    size_t idx = 0;
+    for (size_t i = 0; i < len; ++i) {
+        uint8_t v = data[i];
+        out[idx++] = kHex[(v >> 4) & 0x0f];
+        out[idx++] = kHex[v & 0x0f];
+        if (idx >= sizeof(out) - 2) {
+            (void)write(fd, out, idx);
+            idx = 0;
+        }
+    }
+    if (idx > 0) {
+        (void)write(fd, out, idx);
+    }
+}
+
 int run_baremetal(int argc, char **argv) {
     setvbuf(stdout, nullptr, _IONBF, 0);
     const char *seed_hex = nullptr;
     bool no_output = false;
+    bool print_solution = (TT_PRINT_SOLUTION != 0);
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--seed-hex") == 0 && i + 1 < argc) {
             seed_hex = argv[++i];
         } else if (std::strcmp(argv[i], "--no-output") == 0) {
             no_output = true;
+        } else if (std::strcmp(argv[i], "--print-solution") == 0) {
+            print_solution = true;
         }
     }
     if (!seed_hex) {
@@ -126,6 +151,12 @@ int run_baremetal(int argc, char **argv) {
         seed_hex = TT_SEED_HEX;
     }
 #endif
+    if (!print_solution) {
+        const char *print_env = std::getenv("TT_PRINT_SOLUTION");
+        if (print_env && print_env[0] != '0') {
+            print_solution = true;
+        }
+    }
     if (!seed_hex) {
         std::fprintf(stderr, "Missing --seed-hex (or SEED_HEX env / TT_SEED_HEX)\n");
         return 1;
@@ -201,6 +232,13 @@ int run_baremetal(int argc, char **argv) {
     buf[idx++] = '}';
     buf[idx++] = '\n';
     (void)write(1, buf, idx);
+    if (print_solution) {
+        const char prefix[] = "solution_hex=";
+        (void)write(1, prefix, sizeof(prefix) - 1);
+        write_hex(1, seed, sizeof(seed));
+        write_hex(1, reinterpret_cast<const uint8_t *>(g_c), sizeof(g_c));
+        (void)write(1, "\n", 1);
+    }
     return 0;
 }
 } // namespace

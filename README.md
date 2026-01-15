@@ -50,6 +50,9 @@ Generate a seed, run the RISC-V solver once, and validate via the testnet
 bash run_riscv_validate.sh
 ```
 
+This uses the bare-metal RISC-V build and reconstructs `solution.bin` from the
+`solution_hex` line printed by the solver.
+
 Override defaults if needed:
 
 ```bash

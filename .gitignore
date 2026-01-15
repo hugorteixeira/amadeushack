@@ -8,5 +8,6 @@
   *.log
 /node/
 hard/matmul/build_riscv/
+hard/matmul/build_ttnn/
 /amadeus-typescript-sdk/
 /.env

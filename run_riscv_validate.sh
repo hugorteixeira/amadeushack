@@ -9,15 +9,11 @@ if [[ -f "${ENV_FILE}" ]]; then
   set +a
 fi
 
-RUNS=${RUNS:-1}
 RPC_URL=${RPC_URL:-https://testnet.ama.one}
 VALIDATE_URL=${VALIDATE_URL:-${RPC_URL}/api/upow/validate}
 SEED_HEX=${SEED_HEX:-}
 SEED_BIN=${SEED_BIN:-}
 SEED_BASE58=${SEED_BASE58:-${AMA_SEED_BASE58:-}}
-NO_BUILD=${NO_BUILD:-0}
-RISCV_RUNNER=${RISCV_RUNNER:-}
-RISCV_RUNNER_ARGS=${RISCV_RUNNER_ARGS:-}
 SUBMIT=${SUBMIT:-0}
 MINER=${MINER:-0}
 TARGET_BITS=${TARGET_BITS:-0}
@@ -25,9 +21,11 @@ MAX_ITERS=${MAX_ITERS:-0}
 PRINT_EVERY=${PRINT_EVERY:-1}
 HASH_ALGO=${HASH_ALGO:-blake3}
 NONCE_START=${NONCE_START:-}
+TT_DEVICE_ID=${TT_DEVICE_ID:-}
+
 MATMUL_DIR="${ROOT_DIR}/hard/matmul"
 SCRIPT_DIR="${MATMUL_DIR}/scripts"
-BUILD_DIR="${MATMUL_DIR}/build_riscv"
+BUILD_DIR="${MATMUL_DIR}/build_ttnn"
 SOLUTION_OUT="${BUILD_DIR}/solution.bin"
 SOLUTION_HEX=""
 FOUND=0
@@ -219,13 +217,11 @@ PY
   fi
 }
 
-run_riscv() {
+run_ttnn() {
   local seed_hex_override="${1:-}"
   local -a args
-  args=(--runs "${RUNS}")
-  if [[ "${NO_BUILD}" == "1" ]]; then
-    args+=(--no-build)
-  fi
+  args=(--print-solution)
+  need_cmd python3
   if [[ -n "${seed_hex_override}" ]]; then
     args+=(--seed-hex "${seed_hex_override}")
   elif [[ -n "${SEED_HEX}" ]]; then
@@ -233,27 +229,17 @@ run_riscv() {
   else
     args+=(--seed-bin "${SEED_BIN}")
   fi
-  log "Running RISC-V benchmark (TT_BAREMETAL=1, TT_PRINT_SOLUTION=1)..."
-  local runner_args="${RISCV_RUNNER_ARGS}"
-  if [[ -z "${RISCV_RUNNER}" && -x /opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-run ]]; then
-    if [[ -n "${runner_args}" ]]; then
-      runner_args+=" "
-    fi
-    runner_args+="--env-set TT_PRINT_SOLUTION=1"
-  elif [[ "${RISCV_RUNNER}" == "/opt/tenstorrent/sfpi/compiler/bin/riscv-tt-elf-run" ]]; then
-    if [[ -n "${runner_args}" ]]; then
-      runner_args+=" "
-    fi
-    runner_args+="--env-set TT_PRINT_SOLUTION=1"
+  if [[ -n "${TT_DEVICE_ID}" ]]; then
+    args+=(--device "${TT_DEVICE_ID}")
   fi
+  log "Running TTNN MatMul on device ${TT_DEVICE_ID:-0}..."
   local output_file
   output_file=$(mktemp)
-  TT_BAREMETAL=1 TT_PRINT_SOLUTION=1 RISCV_RUNNER="${RISCV_RUNNER}" RISCV_RUNNER_ARGS="${runner_args}" \
-    "${ROOT_DIR}/benchmark_riscv.sh" "${args[@]}" 2>&1 | tee "${output_file}"
+  python3 "${SCRIPT_DIR}/ttnn_upow.py" "${args[@]}" 2>&1 | tee "${output_file}"
   SOLUTION_HEX=$(sed -n 's/^solution_hex=//p' "${output_file}" | tail -n 1 | tr -d '\r\n')
   rm -f "${output_file}"
   if [[ -z "${SOLUTION_HEX}" ]]; then
-    echo "Failed to capture solution_hex from RISC-V output." >&2
+    echo "Failed to capture solution_hex from TTNN output." >&2
     exit 1
   fi
 }
@@ -334,7 +320,7 @@ if [[ "${MINER}" == "1" ]]; then
   while true; do
     attempts=$((attempts + 1))
     seed_hex_iter=$(build_seed_hex_for_nonce)
-    RUNS=1 run_riscv "${seed_hex_iter}"
+    run_ttnn "${seed_hex_iter}"
     bits=$(hash_bits "${SOLUTION_HEX}")
     if [[ -z "${bits}" ]]; then
       bits=0
@@ -361,7 +347,7 @@ if [[ "${MINER}" == "1" ]]; then
   validate_solution
   submit_solution
 else
-  run_riscv
+  run_ttnn
   validate_solution
   submit_solution
 fi

@@ -1,6 +1,6 @@
 # Hard Track - Execution Guide (Challenge A)
 
-Goal: deliver the fastest correct MatMul solver on the RISC-V Blackhole p150a environment. Primary score is latency; throughput and correctness are also scored.
+Goal: deliver the fastest correct MatMul solver on the Tenstorrent Blackhole p150a environment using TT-metal/TTNN. Primary score is latency; throughput and correctness are also scored.
 
 ## Source requirements (from hackathon docs)
 
@@ -22,7 +22,7 @@ Goal: deliver the fastest correct MatMul solver on the RISC-V Blackhole p150a en
 1. Request API key on TAIKAI/Discord.
 2. Fetch workload spec + input format.
 3. Implement parser for official input format.
-4. Run locally on simulator or provided instance and measure.
+4. Run on the provided TT hardware instance and measure.
 5. Produce JSON metrics and output hash.
 6. Submit results via provided API.
 
@@ -31,18 +31,16 @@ from the public RPC and run locally. See `hard/matmul/README.md`.
 
 ## Baseline in this repo
 
-- `hard/matmul/`: C++ baseline + benchmark harness.
+- `hard/matmul/`: TTNN uPoW MatMul runner.
 - `hard/submit/submit_results.py`: placeholder submission helper.
-- `hard/merkle/`: Challenge B (Merkle proof generator/verifier) baseline.
+- `hard/merkle/`: Challenge B baseline (not wired to TTNN in this repo).
 
 ## Optimization checklist
 
-- Block/tile sizes fit per-core SRAM (1.5MB) and L1/L2 behavior.
-- Pack A/B tiles into contiguous buffers for reuse.
-- Vectorize inner loop (RVV if available).
-- Use multi-threading across cores; avoid false sharing.
-- Pin threads or set affinity if runtime supports it.
-- Use `-O3` plus target-specific flags (`-march=rv64gcv`, etc.).
+- Keep A/B tiles aligned with TTNN tile sizes (pad M/N).
+- Use device-local memory configs for matmul inputs/outputs.
+- Avoid host-device copies inside the nonce loop when possible.
+- Pin device selection (`TT_DEVICE_ID`) and reuse device handles.
 
 ## Validation
 

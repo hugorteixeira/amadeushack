@@ -11,11 +11,19 @@ else
   echo ">> npm not found; skipping Node deps install."
 fi
 
+echo ">> Installing Python deps (hard/matmul/scripts/requirements.txt)..."
+if command -v python3 >/dev/null 2>&1; then
+  python3 -m pip install --user -r "${ROOT_DIR}/hard/matmul/scripts/requirements.txt" || \
+    echo ">> pip failed; install requirements manually."
+else
+  echo ">> python3 not found; skipping Python deps install."
+fi
+
 echo ">> Ensuring scripts are executable..."
 chmod +x \
-  "${ROOT_DIR}/benchmark_riscv.sh" \
   "${ROOT_DIR}/run_riscv_validate.sh" \
-  "${ROOT_DIR}/run_miner_testnet.sh"
+  "${ROOT_DIR}/run_miner_testnet.sh" \
+  "${ROOT_DIR}/hard/matmul/scripts/ttnn_upow.py"
 
 existing_seed=""
 existing_api_key=""

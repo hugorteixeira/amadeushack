@@ -166,7 +166,7 @@ async function main() {
   const solutionPath =
     process.env.SOLUTION_BIN ||
     getArg('--solution') ||
-    resolve(matmulDir, 'build_riscv/solution.bin')
+    resolve(matmulDir, 'build_ttnn/solution.bin')
   const seedBase58 = process.env.AMA_SEED_BASE58 || getArg('--seed-base58')
   const rpcBase = normalizeBaseUrl(
     process.env.AMA_RPC ||

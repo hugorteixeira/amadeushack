@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+ENV_FILE="${ROOT_DIR}/.env"
+if [[ -f "${ENV_FILE}" ]]; then
+  set -a
+  . "${ENV_FILE}"
+  set +a
+fi
+
 RUNS=${RUNS:-1}
 RPC_URL=${RPC_URL:-https://testnet.ama.one}
 VALIDATE_URL=${VALIDATE_URL:-${RPC_URL}/api/upow/validate}
@@ -17,8 +25,6 @@ MAX_ITERS=${MAX_ITERS:-0}
 PRINT_EVERY=${PRINT_EVERY:-1}
 HASH_ALGO=${HASH_ALGO:-blake3}
 NONCE_START=${NONCE_START:-}
-
-ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 MATMUL_DIR="${ROOT_DIR}/hard/matmul"
 SCRIPT_DIR="${MATMUL_DIR}/scripts"
 BUILD_DIR="${MATMUL_DIR}/build_riscv"

@@ -9,3 +9,4 @@
 /node/
 hard/matmul/build_riscv/
 /amadeus-typescript-sdk/
+/.env

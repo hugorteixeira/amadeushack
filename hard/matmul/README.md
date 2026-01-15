@@ -80,6 +80,12 @@ Override defaults if needed:
 RPC_URL=https://testnet.ama.one VALIDATE_URL=https://testnet.ama.one/api/upow/validate bash run_riscv_validate.sh
 ```
 
+Submit on-chain (requires wallet seed, not API key):
+
+```bash
+AMA_SEED_BASE58=... SUBMIT=1 bash run_riscv_validate.sh
+```
+
 ## Benchmark sweep
 
 ```bash

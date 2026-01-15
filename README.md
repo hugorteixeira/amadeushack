@@ -59,6 +59,24 @@ Override defaults if needed:
 RPC_URL=https://testnet.ama.one VALIDATE_URL=https://testnet.ama.one/api/upow/validate bash run_riscv_validate.sh
 ```
 
+Submit on-chain (requires wallet seed, not API key):
+
+```bash
+AMA_SEED_BASE58=... SUBMIT=1 bash run_riscv_validate.sh
+```
+
+The submit step builds a `submit_sol` transaction against the `Epoch` contract
+and calls `/api/tx/submit_and_wait`.
+
+Miner-style output (hashes processed, rate, best bits):
+
+```bash
+MINER=1 TARGET_BITS=20 MAX_ITERS=1000 PRINT_EVERY=1 bash run_riscv_validate.sh
+```
+
+By default, `HASH_ALGO=blake3` is used for the bits display. You can switch to
+SHA256 with `HASH_ALGO=sha256`.
+
 ## RISC-V tuning and options
 
 - Bare-metal build (default, avoids file I/O):

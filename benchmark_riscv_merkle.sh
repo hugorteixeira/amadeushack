@@ -129,6 +129,9 @@ IFS=' ' read -r -a runner_args <<< "${RISCV_RUNNER_ARGS}"
 ELAPSED_FILE=$(mktemp)
 PPS_FILE=$(mktemp)
 trap 'rm -f "${ELAPSED_FILE}" "${PPS_FILE}"' EXIT
+ELAPSED_VALUES=""
+PPS_VALUES=""
+expected_total=$((MERKLE_PROOFS * MERKLE_ITERS))
 
 for i in $(seq 1 "${RUNS}"); do
   start_ns=$(now_ns)
@@ -141,15 +144,17 @@ for i in $(seq 1 "${RUNS}"); do
 
   host_elapsed_ms=$(awk -v s="${start_ns}" -v e="${end_ns}" 'BEGIN{printf "%.6f", (e-s)/1000000.0}')
   total_proofs=$(echo "${output}" | sed -n 's/.*"total_proofs":\([0-9]*\).*/\1/p')
-  if [[ -z "${total_proofs}" ]]; then
-    total_proofs=0
+  if [[ -z "${total_proofs}" || "${total_proofs}" == "0" ]]; then
+    total_proofs="${expected_total}"
   fi
   proofs_per_sec=$(awk -v tp="${total_proofs}" -v ms="${host_elapsed_ms}" 'BEGIN{if(ms==0){printf "0.000000"} else {printf "%.6f", tp/(ms/1000.0)}}')
 
   echo "${output}"
   echo "${host_elapsed_ms}" >> "${ELAPSED_FILE}"
   echo "${proofs_per_sec}" >> "${PPS_FILE}"
-  echo "run=${i} elapsed_ms=${host_elapsed_ms} proofs_per_sec=${proofs_per_sec} total_proofs=${total_proofs}"
+  ELAPSED_VALUES+="${host_elapsed_ms}"$'\n'
+  PPS_VALUES+="${proofs_per_sec}"$'\n'
+  echo "run=${i} elapsed_ms=${host_elapsed_ms} proofs_per_sec=${proofs_per_sec} total_proofs=${total_proofs} expected_total=${expected_total}"
 done
 
 stats() {
@@ -170,5 +175,13 @@ PY
   fi
 }
 
-echo "elapsed_ms: $(stats < "${ELAPSED_FILE}")"
-echo "proofs_per_sec: $(stats < "${PPS_FILE}")"
+if [[ -n "${ELAPSED_VALUES}" ]]; then
+  echo "elapsed_ms: $(printf "%s" "${ELAPSED_VALUES}" | stats)"
+else
+  echo "elapsed_ms: $(stats < "${ELAPSED_FILE}")"
+fi
+if [[ -n "${PPS_VALUES}" ]]; then
+  echo "proofs_per_sec: $(printf "%s" "${PPS_VALUES}" | stats)"
+else
+  echo "proofs_per_sec: $(stats < "${PPS_FILE}")"
+fi

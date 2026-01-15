@@ -41,6 +41,21 @@ You can also use an existing seed file:
 ./benchmark_riscv.sh --runs 1 --seed-bin hard/matmul/seed.bin
 ```
 
+## Testnet validation (one-shot)
+
+Generate a seed, run the RISC-V solver once, and validate via the testnet
+`/api/upow/validate` endpoint:
+
+```bash
+bash run_riscv_validate.sh
+```
+
+Override defaults if needed:
+
+```bash
+RPC_URL=https://testnet.ama.one VALIDATE_URL=https://testnet.ama.one/api/upow/validate bash run_riscv_validate.sh
+```
+
 ## RISC-V tuning and options
 
 - Bare-metal build (default, avoids file I/O):
@@ -107,3 +122,13 @@ Alias:
 ```bash
 ./benchmark_x86.sh --runs 5
 ```
+
+## Hard Hack requirements (from developer_onboarding.pdf)
+
+- Target: RISC-V TensTorrent-class hardware or GPU-based simulation (exact specs TBD).
+- Workloads: MatMul (fixed sizes/precision) and AMA microbench tasks (conv/attention/etc).
+- Output: execution metrics + correctness hash.
+- Submission bundle: raw metrics, output hash, benchmark metadata (compiler flags/libs),
+  plus source or compiled binary. Docker optional but recommended.
+- Constraints: time/memory limits; caching allowed but inputs must be unmodified.
+- Scoring: latency primary, then throughput/correctness (tie-breaks by latency, memory, timestamp).
